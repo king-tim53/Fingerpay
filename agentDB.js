@@ -396,4 +396,22 @@ function startMicroModule(type) {
     }
     
     modal.show();
+
+}
+// --- AGGREGATOR INTELLIGENCE (Added) ---
+function predictCashOutDemand() {
+    // AI predicts high demand based on registration numbers
+    const regCount = parseInt(document.getElementById('totalRegValue')?.innerText || "0");
+    const prediction = regCount > 30 ? "HIGH DEMAND" : "NORMAL";
+    
+    const toastMsg = "AI Alert: " + prediction + " cash-out demand expected at your cluster today.";
+    showToast ? showToast(toastMsg) : alert(toastMsg); 
+}
+
+function recommendTraining() {
+    // Recommends modules based on current Level
+    const level = document.querySelector('.text-gold.font-heading')?.innerText || "AG-LV2";
+    let rec = level.includes("PRO") ? "Advanced Conflict Resolution" : "Biometric Enrollment 101";
+    
+    alert("AI Learning Path: We recommend the '" + rec + "' module next.");
 }
