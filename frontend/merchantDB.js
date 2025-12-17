@@ -123,7 +123,12 @@ function updateTransactionsList(transactions) {
 // ==========================================
 
 // Switch between Dashboard Sections (Overview, Sales, Projects, etc.)
-function showSection(sectionId, btnElement) {
+function showSection(sectionId, btnElement, event) {
+    // Prevent default link behavior
+    if (event) {
+        event.preventDefault();
+    }
+    
     // 1. Hide all sections
     document.querySelectorAll('.content-section').forEach(el => {
         el.classList.add('d-none');
