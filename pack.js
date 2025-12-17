@@ -1,4 +1,4 @@
-/**
+ /**
  * ==========================================
  * MASTER JAVASCRIPT FILE
  * Includes: Navigation, Dashboard, Credit AI,
@@ -385,4 +385,23 @@ function generateIncidentReport() {
     document.getElementById('incidentForm').classList.add('d-none');
     document.getElementById('ticketResult').classList.remove('d-none');
     document.getElementById('ticketText').textContent = "TICKET #99201: Printer Fault";
+
+}
+// --- CUSTOMER AI (FinCoach) ---
+function processAiResponse(text) {
+    // This looks at the ACTUAL balance showing on your pack.html page
+    const currentBalance = document.getElementById('balanceValue').innerText;
+    let response = "";
+
+    if (text.toLowerCase().includes("balance") || text.toLowerCase().includes("money")) {
+        response = `Your current balance is ${currentBalance}. FinCoach says: You are doing well, but try not to spend more than N2,000 today to stay on track!`;
+    } 
+    else if (text.toLowerCase().includes("vault") || text.toLowerCase().includes("save")) {
+        response = "Your Ring-Finger Vault is currently locked. Would you like me to calculate how much more you need to reach your 1-Million Naira goal?";
+    } 
+    else {
+        response = "I'm your FinCoach! You can ask me about your spending, how the Vault works, or to explain banking 'jargon' in Pidgin.";
+    }
+
+    addChatMessage(response, 'ai');
 }
