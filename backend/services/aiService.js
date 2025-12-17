@@ -15,7 +15,9 @@ class AIService {
             this.useMock = true;
         } else {
             this.genAI = new GoogleGenerativeAI(this.apiKey);
-            this.model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+            this.model = this.genAI.getGenerativeModel({
+              model: "gemini-2.5-flash",
+            });
             this.useMock = false;
         }
     }
