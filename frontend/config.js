@@ -4,7 +4,7 @@ const ENV = {
     API_BASE_URL: 'http://localhost:8000/api'
   },
   production: {
-    API_BASE_URL: 'https://fingerpay-api.vercel.app/api'
+    API_BASE_URL: 'https://fingerpay-api.onrender.com/api'
   }
 };
 
