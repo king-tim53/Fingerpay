@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Portal Login | FingerPay</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+ <link href="agentpp.css" rel="stylesheet">
+</head>
+<body>
+
+    <a href="index2.html" class="back-link"><i class="bi bi-arrow-left me-1"></i> Back to Home</a>
+
+    <div class="container px-4">
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
+                
+                <div class="login-card">
+                    
+                    <!-- Scanner Overlay (Hidden) -->
+                    <div id="bioScanner" class="scanner-overlay">
+                        <div class="position-relative mb-4">
+                            <i class="bi bi-fingerprint fingerprint-icon"></i>
+                            <div class="scan-beam"></div>
+                        </div>
+                        <h5 class="text-white fw-bold mb-1">Scanning...</h5>
+                        <p class="text-white-50 small">Place authorized finger on sensor</p>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3 mb-3 border border-success border-opacity-25">
+                            <i class="bi bi-shop-window fs-2"></i>
+                        </div>
+                        <h3 class="fw-bold text-white">Agent Portal</h3>
+                        <p class="text-white-50 small">Access your terminal dashboard</p>
+                    </div>
+
+                    <form id="agentLoginForm">
+                        <!-- Agent ID -->
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small fw-bold">AGENT ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                <input type="text" class="form-control agent-id-input" id="agentId" placeholder="AG-XXXXXXX" maxlength="10" required>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label text-white-50 small fw-bold">PASSWORD</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="agentPass" placeholder="••••••••" required>
+                                <button class="btn btn-outline-secondary border-start-0 border-white border-opacity-10" type="button" onclick="togglePass()">
+                                    <i class="bi bi-eye-slash text-white-50" id="passIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label text-white-50 small" for="rememberMe">Keep me logged in</label>
+                            </div>
+                            <a href="#" class="text-warning small text-decoration-none">Forgot ID?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-agent w-100 rounded-pill mb-3">
+                            Sign In to Terminal
+                        </button>
+
+                        <div class="position-relative text-center mb-3">
+                            <hr class="border-secondary opacity-50">
+                            <span class="position-absolute top-50 start-50 translate-middle px-2 text-white-50 bg-dark small" style="z-index: 1;">OR</span>
+                        </div>
+
+                        <button type="button" class="btn btn-bio w-100 rounded-pill d-flex align-items-center justify-content-center gap-2" onclick="startBiometricAuth()">
+                            <i class="bi bi-fingerprint"></i> Biometric Login
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-white-50 small mb-0">Not a registered agent? <a href="agent.html" class="text-success fw-bold text-decoration-none">Apply Here</a></p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast for Errors/Success -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="loginToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Invalid Credentials
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 1. Auto-Format Agent ID (AG-XXXXXXX)
+        const agentInput = document.getElementById('agentId');
+        
+        agentInput.addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Remove special chars
+            
+            // Ensure it starts with AG
+            if (!value.startsWith('AG')) {
+                // If user deletes, allow it, but if they type numbers, prepend AG
+                if (value.length > 0 && !value.includes('AG')) {
+                     value = 'AG' + value;
+                }
+            }
+            
+            // Add hyphen
+            if (value.length > 2 && !value.includes('-')) {
+                value = value.slice(0, 2) + '-' + value.slice(2);
+            }
+            
+            // Limit to AG- + 7 digits (Total 10 chars)
+            e.target.value = value.slice(0, 10);
+        });
+
+        // 2. Toggle Password Visibility
+        function togglePass() {
+            const input = document.getElementById('agentPass');
+            const icon = document.getElementById('passIcon');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                input.type = "password";
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        }
+
+        // 3. Biometric Login Simulation
+        function startBiometricAuth() {
+            const scanner = document.getElementById('bioScanner');
+            const icon = scanner.querySelector('.fingerprint-icon');
+            const title = scanner.querySelector('h5');
+            
+            // Show Scanner
+            scanner.style.display = 'flex';
+            
+            // 1. Scanning State
+            setTimeout(() => {
+                icon.style.color = 'var(--agent-gold)'; // Gold color on scan
+            }, 1000);
+
+            // 2. Success State
+            setTimeout(() => {
+                icon.className = 'bi bi-check-circle-fill fingerprint-icon';
+                icon.style.color = 'var(--agent-primary)'; // Green on success
+                title.textContent = 'Authorized';
+                document.querySelector('.scan-beam').style.display = 'none';
+            }, 2500);
+
+            // 3. Redirect
+            setTimeout(() => {
+                // Since agent-dashboard.html doesn't exist yet, we alert or redirect to home
+                window.location.href = 'agDB.html'; 
+                
+                scanner.style.display = 'none';
+            }, 3500);
+        }
+
+        // 4. Manual Form Login
+        document.getElementById('agentLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('agentId').value;
+            const pass = document.getElementById('agentPass').value;
+
+            // Simple validation simulation
+            if (id.length === 10 && pass.length > 3) {
+                const btn = this.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                
+                btn.textContent = "Verifying...";
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    alert("Login Successful! Redirecting...");
+                    // window.location.href = 'agent-dashboard.html';
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 1500);
+            } else {
+                showToast("Invalid Agent ID format or Password");
+            }
+        });
+
+        // Toast Helper
+        function showToast(msg) {
+            const toastEl = document.getElementById('loginToast');
+            document.getElementById('toastMessage').textContent = msg;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    </script>
+</body>
+</html>

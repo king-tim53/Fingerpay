@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FingerPay | Biometric Fintech</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link href="pack.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- Mobile Floating Action Button (Quick Transfer) -->
+<div class="fab-container d-lg-none">
+    <button class="btn btn-fab shadow-lg" data-bs-toggle="modal" data-bs-target="#transferModal">
+        <i class="fas fa-exchange-alt"></i>
+    </button>
+</div>
+
+<!-- ================= NEW: AI COACH FLOATING BUTTON ================= -->
+<div class="coach-fab-container">
+    <button class="btn btn-coach shadow-lg" onclick="toggleChatWindow()">
+        <i class="bi bi-robot"></i>
+        <span class="notification-dot"></span>
+    </button>
+</div>
+
+<!-- ================= NEW: AI COACH CHAT WINDOW ================= -->
+<div id="aiCoachWindow" class="chat-window shadow-lg d-none">
+    <!-- Chat Header -->
+    <div class="chat-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <div class="bg-success rounded-circle p-1 d-flex justify-content-center align-items-center" style="width: 35px; height: 35px;">
+                <i class="bi bi-robot fs-5"></i>
+            </div>
+            <div>
+                <h6 class="mb-0 fw-bold">FinCoach AI</h6>
+                <small class="text-success" style="font-size: 0.7rem;">● Online • Biometric Access</small>
+            </div>
+        </div>
+        <button class="btn btn-sm btn-dark" onclick="toggleChatWindow()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <!-- Chat Body -->
+    <div class="chat-body p-3" id="chatHistory">
+        <!-- Initial Message -->
+        <div class="chat-message bot">
+            <div class="message-content">
+                Hello Timofe! 👋 I am your Personal Financial Coach.<br><br>
+                I have analyzed your <strong>FingerVault</strong> and <strong>Transport</strong> spending. I have some important advice for you. Want to hear it?
+            </div>
+            <small class="message-time">Just now</small>
+        </div>
+    </div>
+
+    <!-- Chat Footer -->
+    <div class="chat-footer p-2 border-top bg-white">
+        <div class="input-group">
+            <input type="text" id="chatInput" class="form-control border-0 bg-light" placeholder="Type a message..." onkeypress="handleEnter(event)">
+            <button class="btn btn-success" onclick="sendCoachMessage()"><i class="bi bi-send-fill"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar text-white vh-100 flex-shrink-0 transition-3">
+        <div class="sidebar-header p-3 d-flex justify-content-between align-items-center">
+            <h4 class="fw-bold mb-0 text-white"><i class="fas fa-fingerprint me-2 text-secondary"></i>FingerPay</h4>
+            <button id="sidebar-toggle" class="btn btn-sm text-white d-lg-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- User Profile (Click to Open Settings) -->
+        <div class="p-3 user-profile-section border-bottom border-secondary cursor-pointer" data-bs-toggle="modal" data-bs-target="#settingsModal" title="Open Settings">
+            <div class="d-flex align-items-center">
+                <img src="https://i.pravatar.cc/150?img=5" alt="User" class="rounded-circle me-3 border border-2 border-success" width="50" height="50">
+                <div class="user-details overflow-hidden">
+                    <h6 class="mb-0 fw-bold text-white">Timofe Segun-ojo</h6>
+                    <small class="text-success"><i class="fas fa-shield-alt me-1"></i>Verified Level 3</small>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav flex-column pt-3" id="sidebar-accordion"> 
+            <li class="nav-item">
+                <a class="nav-link active-link" href="#section-dashboard"><i class="fas fa-chart-pie me-3"></i> <span>Dashboard</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#section-vault"><i class="fas fa-piggy-bank me-3"></i> <span>FingerVault</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#billsCollapse" role="button" aria-expanded="false">
+                    <i class="fas fa-receipt me-3"></i> <span>Payments</span> <i class="fas fa-chevron-down float-end small mt-1 dropdown-arrow"></i>
+                </a>
+                <div class="collapse" id="billsCollapse" data-bs-parent="#sidebar-accordion">
+                    <ul class="nav flex-column ms-3 ps-2 border-start border-secondary">
+                        <li class="nav-item"><a class="nav-link sub-link" href="#" data-bs-toggle="modal" data-bs-target="#airtimeModal">Airtime</a></li>
+                        <li class="nav-item"><a class="nav-link sub-link" href="#" data-bs-toggle="modal" data-bs-target="#dataModal">Data Bundle</a></li>
+                        <li class="nav-item"><a class="nav-link sub-link" href="#" data-bs-toggle="modal" data-bs-target="#electricityModal">Utilities</a></li>
+                    </ul>
+                </div>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#section-cards">
+                    <i class="fas fa-credit-card me-3"></i> <span>Cards</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#section-finger">
+                    <i class="fas fa-cogs me-3"></i> <span>Biometric Center</span>
+                </a>
+            </li>
+
+            <li class="nav-item mt-5">
+                <a class="nav-link text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt me-3"></i> <span>Log Out</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#section-fincoach" onclick="showSection('fincoach')">
+                    <i class="bi bi-robot me-2 text-warning"></i> <span>FinCoach AI</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper" class="w-100">
+        
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-light bg-white shadow-sm px-4 py-3 mb-4 sticky-top">
+            <div class="d-flex align-items-center w-100 justify-content-between">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link text-dark d-lg-none me-2" id="mobile-menu-btn"><i class="fas fa-bars fa-lg"></i></button>
+                    <div>
+                        <span class="text-muted small" id="current-date">Fetching date...</span>
+                        <h5 class="fw-bold mb-0 text-primary" id="greeting-msg">Welcome back</h5>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="position-relative me-4 cursor-pointer">
+                        <i class="far fa-bell fa-lg text-muted"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid px-4 pb-5">
+
+            <!-- === SECTION 1: DASHBOARD & IDENTITY === -->
+            <section id="section-dashboard" class="mb-5">
+                
+                <!-- FID Identity Card (Feature 3) -->
+                <div class="card bg-dark text-white mb-4 shadow-lg border-0" style="background: linear-gradient(135deg, #1a1a1a 0%, #0A7A5E 100%); overflow: hidden;">
+                    <div style="position: absolute; top: -50%; right: -10%; font-size: 15rem; opacity: 0.1; transform: rotate(-15deg);"><i class="fas fa-fingerprint"></i></div>
+                    
+                    <div class="card-body p-4 position-relative">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-id-card text-warning me-2"></i>
+                                    <small class="text-uppercase text-white-50 fw-bold letter-spacing-2">Finger Identification Number (FID)</small>
+                                </div>
+                                <h3 class="font-monospace text-white fw-bold mb-1 fs-5 fs-md-3" id="user-fid-display">Loading ID...</h3>
+                                <p class="text-white-50 small mb-3">Your unique biometric payment address.</p>
+                                
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-light rounded-pill" onclick="copyFID()"><i class="far fa-copy me-1"></i> Copy FID</button>
+                                    <button class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#offlineTokenModal"><i class="fas fa-key me-1"></i> Offline Token</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mt-3 mt-md-0">
+                                <div class="bg-white p-2 rounded d-inline-block">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=FingerPay-FID-User-123" alt="FID QR" width="80">
+                                </div>
+                                <small class="d-block text-white-50 mt-1" style="font-size: 0.7rem;">Scan to Pay Me</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Main Balance Card (Glassmorphism) -->
+                    <div class="col-lg-7">
+                        <div class="card text-white shadow-lg h-100 glass-card-primary border-0">
+                            <div class="card-body p-4 position-relative">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <span class="badge bg-white text-primary fw-bold mb-2">Tier 3 Account</span>
+                                        <div class="d-flex align-items-center bg-dark bg-opacity-25 rounded px-2 py-1 mt-1">
+                                            <small class="me-2 text-white-50">Acct: 1234567890</small>
+                                            <i class="far fa-copy cursor-pointer text-warning" onclick="copyToClipboard('1234567890')" title="Copy Account"></i>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-wallet fa-3x text-white-50"></i>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <small class="text-uppercase text-white-50">Total Balance</small>
+                                    <h1 class="display-4 fw-bold mb-0">
+                                        <span id="balanceValue">N546,000.78</span>
+                                        <i id="toggleBalance" class="fas fa-eye ms-2 fs-5 cursor-pointer"></i>
+                                    </h1>
+                                </div>
+
+                                <div class="row mt-auto">
+                                    <div class="col-6"><div class="d-flex align-items-center"><i class="fas fa-arrow-down text-success me-2"></i><div><small class="d-block text-white-50">In</small><span class="fw-bold">N235k</span></div></div></div>
+                                    <div class="col-6"><div class="d-flex align-items-center"><i class="fas fa-arrow-up text-danger me-2"></i><div><small class="d-block text-white-50">Out</small><span class="fw-bold">N105k</span></div></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spending Chart -->
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm h-100 border-0">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold text-muted mb-3">Weekly Analysis</h6>
+                                <div class="chart-container" style="position: relative; height: 220px;">
+                                    <canvas id="spendingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row g-3 mt-3 mb-4">
+                     <h6 class="fw-bold text-muted ps-2">Quick Actions</h6>
+                     <div class="col-3 col-md-2 text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#transferModal" class="text-decoration-none">
+                            <div class="action-btn bg-white shadow-sm p-3 rounded-circle mb-2 mx-auto"><i class="fas fa-paper-plane text-success"></i></div>
+                            <small class="text-muted fw-bold">Transfer</small>
+                        </a>
+                     </div>
+                     <div class="col-3 col-md-2 text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#airtimeModal" class="text-decoration-none">
+                            <div class="action-btn bg-white shadow-sm p-3 rounded-circle mb-2 mx-auto"><i class="fas fa-mobile-alt text-primary"></i></div>
+                            <small class="text-muted fw-bold">Airtime</small>
+                        </a>
+                     </div>
+                     <div class="col-3 col-md-2 text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#dataModal" class="text-decoration-none">
+                            <div class="action-btn bg-white shadow-sm p-3 rounded-circle mb-2 mx-auto"><i class="fas fa-wifi text-danger"></i></div>
+                            <small class="text-muted fw-bold">Data</small>
+                        </a>
+                     </div>
+                     <div class="col-3 col-md-2 text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#electricityModal" class="text-decoration-none">
+                            <div class="action-btn bg-white shadow-sm p-3 rounded-circle mb-2 mx-auto"><i class="fas fa-bolt text-warning"></i></div>
+                            <small class="text-muted fw-bold">Power</small>
+                        </a>
+                     </div>
+                </div>
+            </section>
+
+            <!-- === SECTION 2: FINGER VAULT (Savings) === -->
+            <section id="section-vault" class="mb-5">
+                <div class="card border-0 shadow-lg position-relative overflow-hidden vault-card">
+                    <!-- Background Pattern -->
+                    <div class="vault-pattern"></div>
+                    
+                    <div class="card-body p-4 position-relative z-1 text-white">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-box-lg bg-warning text-dark rounded-circle me-3 shadow-gold pulse-anim">
+                                        <i class="fas fa-piggy-bank fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="mb-0 fw-bold letter-spacing-1">FingerVault</h4>
+                                        <span class="badge bg-success bg-opacity-25 border border-success text-success small rounded-pill">
+                                            <i class="fas fa-check-circle me-1"></i> Auto-Save Active
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <p class="text-white-50 small mb-4">
+                                    <i class="fas fa-lock text-warning me-1"></i> 
+                                    Protected by Biometric Level 3. Unlocks <strong>only</strong> with <span class="text-warning fw-bold">Ring Finger</span>.
+                                </p>
+                                
+                                <!-- Balance & Interest -->
+                                <div class="d-flex gap-4 mb-3">
+                                    <div>
+                                        <small class="text-uppercase text-white-50 small-font">Vault Balance</small>
+                                        <h2 class="fw-bold text-white mb-0">N980,600.00</h2>
+                                    </div>
+                                    <div class="border-start border-white border-opacity-10 ps-3">
+                                        <small class="text-uppercase text-white-50 small-font">Accrued Interest</small>
+                                        <h5 class="text-success mb-0 fw-bold">+N52,400 <i class="fas fa-arrow-trend-up small"></i></h5>
+                                    </div>
+                                </div>
+
+                                <!-- Savings Goal Progress -->
+                                <div class="bg-dark bg-opacity-50 rounded p-2 border border-white border-opacity-10" style="max-width: 400px;">
+                                    <div class="d-flex justify-content-between small text-white-50 mb-1">
+                                        <span>Goal: New Car</span>
+                                        <span>98% of N1M</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 98%; box-shadow: 0 0 10px #ffc107;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                                <button class="btn btn-outline-warning btn-lg w-100 mb-3 fw-bold hover-glow" data-bs-toggle="modal" data-bs-target="#vaultTopUpModal">
+                                    <i class="fas fa-plus-circle me-2"></i> Top Up Vault
+                                </button>
+                                <button class="btn btn-danger w-100 fw-bold shadow-lg" data-bs-toggle="modal" data-bs-target="#vaultWithdrawModal">
+                                    <i class="fas fa-fingerprint me-2"></i> Auth Withdraw
+                                </button>
+                                <small class="text-white-50 d-block mt-2" style="font-size: 0.7rem;">*Penalty applies if withdrawn before maturity date</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === SECTION 3: RECENT TRANSACTIONS === -->
+            <section id="section-history" class="mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3"><h6 class="mb-0 fw-bold">Recent Transactions</h6></div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Transaction</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-center">Receipt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded p-2 me-3"><i class="fas fa-user text-primary"></i></div>
+                                            <div><span class="d-block fw-bold">Transfer from John</span><small class="text-muted">Ref: TX-90123</small></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">Dec 10, 10:30 AM</td>
+                                    <td><span class="badge bg-success-subtle text-success rounded-pill">Credit</span></td>
+                                    <td class="text-end fw-bold text-success">+N150,000.00</td>
+                                    <td class="text-center"><button class="btn btn-sm btn-light border" onclick="generateReceipt('John Doe', '150,000', 'Dec 10')"><i class="fas fa-file-invoice"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded p-2 me-3"><i class="fas fa-shopping-bag text-danger"></i></div>
+                                            <div><span class="d-block fw-bold">Shoprite Lekki</span><small class="text-muted">Ref: TX-90122</small></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">Dec 10, 09:15 AM</td>
+                                    <td><span class="badge bg-danger-subtle text-danger rounded-pill">Debit</span></td>
+                                    <td class="text-end fw-bold text-danger">-N85,000.00</td>
+                                    <td class="text-center"><button class="btn btn-sm btn-light border" onclick="generateReceipt('Shoprite', '85,000', 'Dec 10')"><i class="fas fa-file-invoice"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-5 text-muted">
+
+            <!-- === SECTION 4: CARDS === -->
+            <section id="section-cards" class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="fw-bold mb-0">Wallet & Cards</h5>
+                        <small class="text-muted">Manage funding sources for your biometrics.</small>
+                    </div>
+                    <button class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#addCardModal">
+                        <i class="fas fa-plus me-1"></i> Add New
+                    </button>
+                </div>
+
+                <div class="row g-4">
+                    
+                    <!-- Card 1: Premium Dark (Zenith) -->
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card border-0 text-white card-skin-dark shadow-lg position-relative overflow-hidden">
+                            <!-- Decorative Mesh Background -->
+                            <div class="card-mesh"></div>
+                            
+                            <div class="card-body p-4 d-flex flex-column justify-content-between position-relative z-1" style="min-height: 240px;">
+                                <!-- Top Row -->
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fas fa-wifi fa-rotate-90 opacity-75"></i>
+                                        <span class="badge bg-white bg-opacity-10 border border-white border-opacity-25 rounded-pill fw-normal">Primary</span>
+                                    </div>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" width="50" alt="Mastercard">
+                                </div>
+
+                                <!-- Chip & Number -->
+                                <div class="mt-4">
+                                    <div class="card-chip mb-3"></div>
+                                    <h4 class="mb-0 font-monospace letter-spacing-2 text-shadow">•••• •••• •••• 4001</h4>
+                                </div>
+
+                                <!-- Bottom Row -->
+                                <div class="d-flex justify-content-between align-items-end mt-4">
+                                    <div>
+                                        <small class="d-block text-white-50 text-uppercase small-font mb-1">Card Holder</small>
+                                        <h6 class="fw-bold mb-0 letter-spacing-1">JANE DOE</h6>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="d-block text-white-50 text-uppercase small-font mb-1">Expires</small>
+                                        <h6 class="fw-bold mb-0 font-monospace">12/26</h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Actions Overlay (Visible on Hover/Click) -->
+                            <div class="card-actions bg-dark bg-opacity-75 position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center gap-3 backdrop-blur opacity-0 hover-show transition-all">
+                                <button class="btn btn-light rounded-circle shadow-sm" title="Freeze Card"><i class="fas fa-snowflake text-info"></i></button>
+                                <button class="btn btn-light rounded-circle shadow-sm" title="Delete Card"><i class="fas fa-trash text-danger"></i></button>
+                                <button class="btn btn-light rounded-circle shadow-sm" title="Settings"><i class="fas fa-cog text-dark"></i></button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2 px-1">
+                            <small class="text-muted"><i class="fas fa-shield-alt text-success me-1"></i> Biometric Linked</small>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="freezeToggle1">
+                                <label class="form-check-label small text-muted" for="freezeToggle1">Active</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add New Card Placeholder -->
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card h-100 border-2 border-dashed border-secondary bg-transparent rounded-4 d-flex align-items-center justify-content-center cursor-pointer hover-bg-light transition-all" data-bs-toggle="modal" data-bs-target="#addCardModal" style="min-height: 240px; opacity: 0.6;">
+                            <div class="text-center">
+                                <div class="bg-light rounded-circle p-3 d-inline-block mb-3 shadow-sm">
+                                    <i class="fas fa-plus fa-lg text-primary"></i>
+                                </div>
+                                <h6 class="fw-bold text-muted">Link New Card</h6>
+                                <small class="text-muted">Supports Visa & Mastercard</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === SECTION 5: BIOMETRIC COMMAND CENTER === -->
+            <section id="section-finger" class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="fw-bold mb-0">Biometric Command Center</h5>
+                        <small class="text-muted">Manage routing, limits, and security protocols.</small>
+                    </div>
+                    <button class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                        <i class="fas fa-plus me-1"></i> Enroll New
+                    </button>
+                </div>
+
+                <div class="card shadow-sm border-0 overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0 table-hover">
+                            <thead class="bg-light text-uppercase small text-muted">
+                                <tr>
+                                    <th class="ps-4 py-3">Finger Identity</th>
+                                    <th>Smart Routing</th>
+                                    <th>Spending Limit</th>
+                                    <th>Panic Mode</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="biometric-table-body">
+                                <!-- Row 1: Active Standard Finger -->
+                                <tr class="bio-row">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bio-icon-box bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                                <i class="fas fa-fingerprint fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold d-block text-dark">Right Index</span>
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    <i class="far fa-clock me-1"></i> Last used: 2h ago
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm border-0 bg-light fw-bold text-dark custom-select" onchange="saveConfig(this)">
+                                            <option value="zenith">Auto-Pay: Zenith</option>
+                                            <option value="gtb">Auto-Pay: GTBank</option>
+                                            <option value="ask">Ask on Screen</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="input-group input-group-sm flex-nowrap">
+                                            <span class="input-group-text bg-white border-end-0 text-muted">N</span>
+                                            <input type="number" class="form-control border-start-0 border-end-0" value="50000" onblur="saveConfig(this)">
+                                            <select class="form-select border-start-0 bg-light text-muted" style="max-width: 80px;">
+                                                <option value="daily">/Day</option>
+                                                <option value="weekly">/Wk</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch d-flex align-items-center">
+                                            <input class="form-check-input panic-toggle cursor-pointer" type="checkbox" id="panic1">
+                                            <label class="form-check-label small ms-2 text-muted" for="panic1">Normal</label>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-success-subtle text-success border border-success rounded-pill px-2">Active</span></td>
+                                    <td class="text-end pe-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light border-0 text-muted rounded-circle" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                                <li><a class="dropdown-item small" href="#"><i class="fas fa-pen me-2"></i>Rename</a></li>
+                                                <li><a class="dropdown-item small" href="#"><i class="fas fa-sync me-2"></i>Recalibrate</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item small text-danger" href="#"><i class="fas fa-trash me-2"></i>Unlink</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 2: Panic/Duress Finger -->
+                                <tr class="bio-row panic-active-row">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bio-icon-box bg-danger bg-opacity-10 text-danger rounded-circle me-3">
+                                                <i class="fas fa-fingerprint fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold d-block text-dark">Left Pinky</span>
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    <i class="fas fa-shield-alt me-1 text-danger"></i> Protocol Active
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm border-0 bg-danger bg-opacity-10 text-danger fw-bold" disabled>
+                                            <option>Silent Alarm Protocol</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="input-group input-group-sm opacity-50">
+                                            <span class="input-group-text bg-light border-end-0">N</span>
+                                            <input type="number" class="form-control border-start-0" value="0" disabled>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch d-flex align-items-center">
+                                            <input class="form-check-input panic-toggle cursor-pointer" type="checkbox" id="panic2" checked>
+                                            <label class="form-check-label small ms-2 fw-bold text-danger" for="panic2">Duress</label>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-danger text-white rounded-pill px-2">Monitoring</span></td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-light border-0 text-muted rounded-circle disabled"><i class="fas fa-ellipsis-v"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+ 
+   <!-- ================= SECTION 6: FINCOACH AI (CUSTOMER & SDG HUB) ================= -->
+<section id="section-fincoach" class="content-section d-none fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-0">FinCoach AI Assistant</h5>
+            <small class="text-muted">Financial Health, Education & Salary Planning.</small>
+        </div>
+        <span class="badge bg-success bg-opacity-10 text-success border border-success shadow-sm">
+            <span class="spinner-grow spinner-grow-sm me-1" role="status" style="width: 8px; height: 8px;"></span> Online
+        </span>
+    </div>
+
+    <div class="row g-4 h-100">
+        <!-- LEFT: INTERACTIVE COMMAND GRID -->
+        <div class="col-lg-4 d-none d-lg-block">
+            <div class="card border-0 shadow-lg rounded-4 h-100 bg-dark text-white overflow-hidden">
+                <div class="card-header bg-transparent border-secondary p-4">
+                    <h5 class="fw-bold text-white mb-0"><i class="bi bi-grid-fill text-info me-2"></i>AI Command Center</h5>
+                    <small class="text-white-50">Click a module to activate in chat.</small>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <!-- 1. Jargon Buster -->
+                        <div class="col-6">
+                            <div class="p-3 rounded bg-white bg-opacity-10 cmd-btn h-100 cursor-pointer" onclick="triggerAiCommand('1')">
+                                <i class="bi bi-translate text-warning fs-4 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-0 small">Jargon Buster</h6>
+                                <small class="text-white-50" style="font-size: 0.7rem;">Pidgin/Local Modes</small>
+                            </div>
+                        </div>
+                        <!-- 2. Salary Sorter -->
+                        <div class="col-6">
+                            <div class="p-3 rounded bg-white bg-opacity-10 cmd-btn h-100 cursor-pointer" onclick="triggerAiCommand('2')">
+                                <i class="bi bi-pie-chart-fill text-success fs-4 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-0 small">Salary Sorter</h6>
+                                <small class="text-white-50" style="font-size: 0.7rem;">Auto-Split Funds</small>
+                            </div>
+                        </div>
+                        <!-- 3. Health Planner (SDG 3) -->
+                        <div class="col-6">
+                            <div class="p-3 rounded bg-white bg-opacity-10 cmd-btn h-100 cursor-pointer" onclick="triggerAiCommand('health')">
+                                <i class="bi bi-hospital-fill text-danger fs-4 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-0 small">Health Fund</h6>
+                                <small class="text-white-50" style="font-size: 0.7rem;">Emergency Planner</small>
+                            </div>
+                        </div>
+                        <!-- 4. Story Mode (SDG 4) -->
+                        <div class="col-6">
+                            <div class="p-3 rounded bg-white bg-opacity-10 cmd-btn h-100 cursor-pointer" onclick="triggerAiCommand('story')">
+                                <i class="bi bi-book-half text-info fs-4 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-0 small">Fin-Stories</h6>
+                                <small class="text-white-50" style="font-size: 0.7rem;">Learn via Tales</small>
+                            </div>
+                        </div>
+                        <!-- 5. Bill Explainer (SDG 3) -->
+                        <div class="col-6">
+                            <div class="p-3 rounded bg-white bg-opacity-10 cmd-btn h-100 cursor-pointer" onclick="triggerAiCommand('bill')">
+                                <i class="bi bi-receipt text-light fs-4 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-0 small">Bill Scanner</h6>
+                                <small class="text-white-50" style="font-size: 0.7rem;">Simplify Med Bills</small>
+                            </div>
+                        </div>
+                        <!-- 6. Savings Sim (SDG 4) -->
+                        <div class="col-6">
+                            <div class="p-3 rounded bg-white bg-opacity-10 cmd-btn h-100 cursor-pointer" onclick="triggerAiCommand('sim')">
+                                <i class="bi bi-piggy-bank-fill text-primary fs-4 mb-2 d-block"></i>
+                                <h6 class="fw-bold mb-0 small">Savings Sim</h6>
+                                <small class="text-white-50" style="font-size: 0.7rem;">Growth Calculator</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: CHAT INTERFACE -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 h-100 overflow-hidden d-flex flex-column" style="min-height: 600px;">
+                <!-- Chat Header -->
+                <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between sticky-top">
+                    <div class="d-flex align-items-center">
+                        <div class="position-relative me-3">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" width="40">
+                            <span class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle"></span>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0">FinCoach</h6>
+                            <small class="text-muted" id="chatSubtitle">Replies instantly</small>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-light text-danger me-2" onclick="clearChat()" title="Reset Chat"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-sm btn-light" title="Voice Mode"><i class="bi bi-mic"></i></button>
+                    </div>
+                </div>
+
+                <!-- Chat History Area -->
+                <div class="card-body chat-container p-4 overflow-auto flex-grow-1" id="mainChatHistory">
+                    <!-- Intro Message -->
+                    <div class="chat-message bot fade-in">
+                        <div class="message-content">
+                            👋 <strong>Hello, Timofe!</strong><br>
+                            I am your FinCoach. Use the <strong>Command Center</strong> on the left or type "Menu" to see what I can do for you today.
+                        </div>
+                        <div class="mt-1 small text-muted ms-1">Just now</div>
+                    </div>
+                </div>
+
+                <!-- Modern Chat Footer -->
+                <div class="card-footer bg-white border-top p-3">
+                    <!-- Quick Suggestions Chips (Dynamic) -->
+                    <div class="d-flex gap-2 overflow-auto mb-2 no-scrollbar" id="quickChips">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill text-nowrap" onclick="triggerAiCommand('health')">🚑 Health Plan</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill text-nowrap" onclick="triggerAiCommand('story')">📚 Learn</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill text-nowrap" onclick="triggerAiCommand('2')">💰 Sort Salary</button>
+                    </div>
+
+                    <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border">
+                        <button class="btn btn-light border-end px-3 text-muted"><i class="bi bi-paperclip"></i></button>
+                        <input type="text" id="mainChatInput" class="form-control border-0 bg-white ps-3" placeholder="Ask FinCoach anything..." onkeypress="handleMainEnter(event)">
+                        <button class="btn btn-primary px-4 fw-bold" onclick="sendMainChat()"><i class="bi bi-send-fill"></i></button>
+                    </div>
+                    <div class="text-center mt-2">
+                        <small class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-shield-lock-fill me-1"></i>Secure & Private Financial Chat</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================= MODALS FOR AI ACTIONS ================= -->
+
+<!-- 1. Salary Sorter Modal -->
+<div class="modal fade" id="salaryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="fw-bold"><i class="bi bi-pie-chart-fill me-2"></i>Salary Splitter</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <h6 class="fw-bold text-muted">Detected Inflow: N100,000</h6>
+                <div class="progress mb-3" style="height: 25px;">
+                    <div class="progress-bar bg-success" style="width: 50%">Needs (50%)</div>
+                    <div class="progress-bar bg-warning text-dark" style="width: 30%">Wants (30%)</div>
+                    <div class="progress-bar bg-info text-dark" style="width: 20%">Savings (20%)</div>
+                </div>
+                <p class="small text-muted">We will move <strong>N20,000</strong> to your FingerVault automatically.</p>
+                <button class="btn btn-success w-100 rounded-pill shadow-sm" onclick="executeAiAction('Salary Split Complete! N20k Saved.')">Confirm Split</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Health Fund Planner (SDG 3) -->
+<div class="modal fade" id="healthPlanModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="fw-bold"><i class="bi bi-hospital me-2"></i>Emergency Health Fund</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="small text-muted mb-3">Calculate how much you need to save for medical emergencies.</p>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Monthly Living Expenses (N)</label>
+                    <input type="number" class="form-control" id="healthExpenses" placeholder="e.g., 50000">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Dependents (Children/Parents)</label>
+                    <select class="form-select" id="healthDependents">
+                        <option value="1">Just Me</option>
+                        <option value="1.5">Me + 1 Dependent</option>
+                        <option value="2">Me + Family</option>
+                    </select>
+                </div>
+                <button class="btn btn-danger w-100 rounded-pill" onclick="calculateHealthFund()">Calculate Target</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Savings Simulator (SDG 4) -->
+<div class="modal fade" id="savingsSimModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="fw-bold"><i class="bi bi-graph-up-arrow me-2"></i>Savings Simulator</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">If I save daily...</label>
+                    <div class="input-group">
+                        <span class="input-group-text">N</span>
+                        <input type="number" class="form-control" id="simAmount" placeholder="500">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">For...</label>
+                    <select class="form-select" id="simDuration">
+                        <option value="30">1 Month</option>
+                        <option value="180">6 Months</option>
+                        <option value="365">1 Year</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary w-100 rounded-pill" onclick="runSavingsSim()">Simulate Future Wealth</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 2. Budget Lock Modal -->
+<div class="modal fade" id="budgetModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="fw-bold">Lock Transport Card?</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="display-4 mb-3">🔒</div>
+                <p>You have exceeded your transport budget. Locking this category will decline ride-hailing apps for 3 days.</p>
+                <button class="btn btn-danger w-100 rounded-pill" onclick="simulateAiAction('Transport Category Locked!')">Lock Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================================== MODALS ================================== -->
+
+<!-- 1. SETTINGS & KYC MODAL -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content bg-light">
+            <div class="modal-header border-0 bg-white">
+                <h5 class="modal-title fw-bold"><i class="fas fa-cog me-2"></i>Account Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="list-group shadow-sm">
+                            <a href="#" class="list-group-item list-group-item-action active border-0" onclick="switchTab('profile', event)">Profile & KYC</a>
+                            <a href="#" class="list-group-item list-group-item-action border-0" onclick="switchTab('security', event)">Security</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="tab-profile" class="settings-tab">
+                            <h6 class="fw-bold mb-3">Identity Verification (Level 3)</h6>
+                            <div class="card border-0 shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="mb-2"><label class="small fw-bold">BVN</label><div class="input-group"><input type="text" class="form-control" value="222****8901" disabled><span class="input-group-text text-success"><i class="fas fa-check-circle"></i></span></div></div>
+                                    <div class="mb-2"><label class="small fw-bold">NIN</label><div class="input-group"><input type="text" class="form-control" value="987****1234" disabled><span class="input-group-text text-success"><i class="fas fa-check-circle"></i></span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-security" class="settings-tab d-none">
+                            <h6 class="fw-bold mb-3">Security</h6>
+                            <button class="btn btn-outline-danger w-100 mb-2">Change Transaction PIN</button>
+                            <div class="form-check form-switch mt-3"><input class="form-check-input" type="checkbox" checked><label class="form-check-label">Enable Fingerprint Login</label></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. TRANSFER MODAL (Smart FID/Bank) -->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0"><h5 class="modal-title fw-bold">Transfer Funds</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body p-4 pt-0">
+                <ul class="nav nav-pills nav-fill mb-4 bg-light rounded p-1" id="transferTab" role="tablist">
+                    <li class="nav-item"><button class="nav-link active rounded fw-bold" id="bank-tab" data-bs-toggle="tab" data-bs-target="#bank-pane" type="button">To Bank</button></li>
+                    <li class="nav-item"><button class="nav-link rounded fw-bold" id="fid-tab" data-bs-toggle="tab" data-bs-target="#fid-pane" type="button">To FID (Bio)</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="bank-pane">
+                        <div class="mb-3"><label class="form-label small fw-bold">BANK</label><select class="form-select"><option>Zenith Bank</option><option>GTBank</option><option>UBA</option><option>OPay</option></select></div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">ACCOUNT NUMBER</label>
+                            <div class="position-relative">
+                                <input type="text" class="form-control" id="transfer-acct-num" placeholder="0123456789" maxlength="10">
+                                <div id="acct-loader" class="position-absolute top-50 end-0 translate-middle-y me-3 d-none"><div class="spinner-border spinner-border-sm text-primary"></div></div>
+                                <div id="resolved-name-box" class="mt-1 d-none"><small class="text-success fw-bold"><i class="fas fa-check-circle"></i> <span id="resolved-name-text"></span></small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="fid-pane">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">RECIPIENT FID</label>
+                            <input type="text" class="form-control font-monospace text-uppercase" id="fid-input" placeholder="JD-XXXX-XXX-...">
+                            <div id="fid-lookup-result" class="mt-2 fw-bold text-success small d-none"><i class="fas fa-check-circle me-1"></i> User Verified</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 mt-3"><label class="form-label small fw-bold">AMOUNT</label><div class="input-group input-group-lg"><span class="input-group-text fw-bold">N</span><input type="number" class="form-control fw-bold" placeholder="0.00"></div></div>
+                <button class="btn btn-primary w-100 btn-lg perform-transaction">Send Funds</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. SMART DATA MODAL -->
+<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold"><i class="fas fa-wifi me-2"></i>Buy Data</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">NETWORK</label>
+                    <div class="row g-2 text-center" id="network-selector">
+                        <div class="col-3"><input type="radio" class="btn-check" name="dataNetwork" id="data-mtn" value="mtn" checked><label class="btn btn-outline-warning w-100 fw-bold" for="data-mtn">MTN</label></div>
+                        <div class="col-3"><input type="radio" class="btn-check" name="dataNetwork" id="data-airtel" value="airtel"><label class="btn btn-outline-danger w-100 fw-bold" for="data-airtel">Airtel</label></div>
+                        <div class="col-3"><input type="radio" class="btn-check" name="dataNetwork" id="data-glo" value="glo"><label class="btn btn-outline-success w-100 fw-bold" for="data-glo">GLO</label></div>
+                        <div class="col-3"><input type="radio" class="btn-check" name="dataNetwork" id="data-9mobile" value="9mobile"><label class="btn btn-outline-secondary w-100 fw-bold" for="data-9mobile">9ja</label></div>
+                    </div>
+                </div>
+                <div class="mb-3"><label class="form-label small fw-bold">PHONE</label><input type="tel" class="form-control" placeholder="080XXXXXXXX"></div>
+                <div class="mb-4"><label class="form-label small fw-bold">PLAN</label><select class="form-select form-select-lg" id="data-plan-select"><option>Select plan...</option></select><div class="form-text text-end text-primary fw-bold" id="plan-price-display">N0.00</div></div>
+                <button class="btn btn-primary w-100 btn-lg perform-transaction">Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. AIRTIME MODAL (Simple) -->
+<div class="modal fade" id="airtimeModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Buy Airtime</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="tel" class="form-control mb-3" placeholder="Phone Number"><div class="input-group"><span class="input-group-text">N</span><input type="number" class="form-control" placeholder="Amount"></div></div><div class="modal-footer"><button class="btn btn-primary w-100 perform-transaction">Buy</button></div></div></div></div>
+
+<!-- 5. ELECTRICITY MODAL (Simple) -->
+<div class="modal fade" id="electricityModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Electricity Bill</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><select class="form-select mb-3"><option>IKEDC (Prepaid)</option><option>EKEDC (Prepaid)</option></select><input type="text" class="form-control mb-3" placeholder="Meter Number"><div class="input-group"><span class="input-group-text">N</span><input type="number" class="form-control" placeholder="Amount"></div></div><div class="modal-footer"><button class="btn btn-primary w-100 perform-transaction">Pay Bill</button></div></div></div></div>
+
+<!-- 6. MODERN ADD CARD MODAL -->
+<div class="modal fade" id="addCardModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-wallet me-2 text-secondary"></i>Link Payment Method</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <form id="cardForm">
+                    <!-- Card Number -->
+                    <div class="mb-3 position-relative">
+                        <label class="form-label small fw-bold text-muted">CARD NUMBER</label>
+                        <div class="input-group input-group-lg shadow-sm">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="far fa-credit-card"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                            <span class="input-group-text bg-white border-start-0" id="card-brand-icon"><i class="fas fa-question-circle text-light"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- Expiry -->
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-muted">EXPIRY</label>
+                            <div class="input-group shadow-sm">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="far fa-calendar-alt"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="card-expiry" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                        </div>
+                        <!-- CVV -->
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-muted">CVV</label>
+                            <div class="input-group shadow-sm">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control border-start-0 ps-0" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info border-0 bg-info bg-opacity-10 d-flex align-items-center mt-4 mb-0 rounded-3">
+                        <i class="fas fa-shield-alt text-info fs-4 me-3"></i>
+                        <small class="text-muted lh-sm">We will charge a refundable <strong>N50</strong> fee to verify this card securely.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 bg-light pt-0">
+                <button type="button" class="btn btn-light text-muted" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary px-4 fw-bold shadow-sm perform-transaction">Verify & Link</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 7. OFFLINE TOKEN MODAL -->
+<div class="modal fade" id="offlineTokenModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 bg-dark text-white">
+            <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold text-warning"><i class="fas fa-wifi-slash me-2"></i>Offline Mode</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body text-center p-4">
+                <p class="small text-white-50 mb-4">Use this token at POS when network fails.</p>
+                <div class="position-relative mb-4">
+                    <div id="token-blur-cover" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(8px); cursor: pointer; z-index: 2;"><span class="fw-bold"><i class="fas fa-fingerprint me-1"></i> Tap to Reveal</span></div>
+                    <div class="bg-white text-dark rounded p-3"><h1 class="font-monospace fw-bold mb-0 letter-spacing-4" id="offline-token-code">------</h1></div>
+                </div>
+                <div class="progress mb-2" style="height: 4px;"><div class="progress-bar bg-warning" id="token-timer-bar" style="width: 100%"></div></div><small class="text-warning">Valid for 60s</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 8. REGISTRATION MODAL -->
+<div class="modal fade" id="registrationModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content text-center"><div class="modal-body p-4"><h5 class="mb-4">Scan Finger</h5><div id="fingerprint-scan-area" class="mb-3 mx-auto"><i class="fas fa-fingerprint fa-5x text-secondary" id="scan-icon"></i></div><p id="scan-message" class="text-muted fw-bold">Place finger on sensor</p><div class="progress mt-3 d-none" id="scan-progress-wrapper" style="height: 5px;"><div class="progress-bar bg-success" id="enrollment-progress" style="width: 0%"></div></div><button class="btn btn-primary mt-3 w-100" id="startEnrollmentBtn">Start Scan</button></div></div></div></div>
+
+<!-- 9. RECEIPT MODAL -->
+<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg"><div class="modal-body p-0"><div class="bg-primary text-white p-4 text-center rounded-top"><i class="fas fa-check-circle fa-3x mb-2"></i><h5 class="fw-bold">Success</h5><small>Ref: FID-TX-998877</small></div><div class="p-4 bg-white"><div class="text-center mb-4"><h2 class="fw-bold text-dark" id="receipt-amount">N0.00</h2><span class="badge bg-success-subtle text-success">Completed</span></div><div class="d-flex justify-content-between mb-2"><span class="text-muted small">Beneficiary</span><span class="fw-bold" id="receipt-name">---</span></div><div class="d-flex justify-content-between mb-2"><span class="text-muted small">Date</span><span class="fw-bold" id="receipt-date">---</span></div></div><div class="bg-light p-3 text-center rounded-bottom border-top"><button class="btn btn-primary w-100"><i class="fas fa-share-alt me-2"></i> Share Receipt</button></div></div></div></div></div>
+
+<!-- 10. SUCCESS MODAL -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content text-center border-0"><div class="modal-body p-4"><div class="mb-3 text-success"><i class="fas fa-check-circle fa-4x"></i></div><h5 class="fw-bold">Success!</h5><p id="successModalBody" class="text-muted small">Request processed.</p><button class="btn btn-success w-100 rounded-pill mt-3" data-bs-dismiss="modal">Done</button></div></div></div></div>
+
+<!-- 11. LOGOUT MODAL -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0"><div class="modal-body text-center p-4"><i class="fas fa-sign-out-alt fa-3x text-danger mb-3"></i><h5>Log Out?</h5><p class="text-muted small">Are you sure?</p><div class="d-flex justify-content-center gap-2 mt-4"><button class="btn btn-light" data-bs-dismiss="modal">No</button><button class="btn btn-danger" id="confirmLogoutBtn" >Yes</button></div></div></div></div></div>
+<!-- 1. Salary Sorter Confirmation -->
+<div class="modal fade" id="salaryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="fw-bold">Execute Salary Split?</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="display-4 mb-3">💸</div>
+                <p>The AI will move <strong>N20,000</strong> to FingerVault and <strong>N10,000</strong> to Bills Payment.</p>
+                <button class="btn btn-success w-100 rounded-pill" onclick="simulateAiAction('Salary Sorted Successfully!')">Confirm Split</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Budget Lock Modal -->
+<div class="modal fade" id="budgetModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="fw-bold">Lock Transport Card?</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="display-4 mb-3">🔒</div>
+                <p>You have exceeded your transport budget. Locking this category will decline ride-hailing apps for 3 days.</p>
+                <button class="btn btn-danger w-100 rounded-pill" onclick="simulateAiAction('Transport Category Locked!')">Lock Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- TOAST -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true"><div class="d-flex"><div class="toast-body"><i class="fas fa-check me-2 text-success"></i> Copied to clipboard!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+<!-- 1. VAULT TOP UP MODAL -->
+<div class="modal fade" id="vaultTopUpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-coins text-warning me-2"></i>Add Funds</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <form id="vaultDepositForm">
+                    <!-- Amount Input -->
+                    <label class="form-label small fw-bold text-muted">AMOUNT TO SAVE</label>
+                    <div class="input-group input-group-lg mb-3 shadow-sm">
+                        <span class="input-group-text bg-white text-success fw-bold">N</span>
+                        <input type="number" class="form-control fw-bold" id="depositAmount" placeholder="5000">
+                    </div>
+
+                    <!-- Interest Preview -->
+                    <div class="alert alert-success border-0 bg-success bg-opacity-10 d-flex align-items-center py-2 mb-3">
+                        <i class="fas fa-percentage text-success fs-4 me-3"></i>
+                        <div>
+                            <small class="d-block text-muted line-height-1">Potential Return (12% p.a)</small>
+                            <strong class="text-success" id="interestPreview">+N0.00</strong>
+                        </div>
+                    </div>
+
+                    <!-- Frequency Toggle -->
+                    <div class="card border-0 bg-white shadow-sm mb-3">
+                        <div class="card-body py-2">
+                            <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
+                                <label class="form-check-label fw-bold text-dark small" for="autoSaveToggle">Make this recurring?</label>
+                                <input class="form-check-input ms-auto cursor-pointer" type="checkbox" id="autoSaveToggle">
+                            </div>
+                            <div id="freqOptions" class="mt-2 d-none">
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="freq" id="daily" checked>
+                                    <label class="btn btn-outline-secondary btn-sm" for="daily">Daily</label>
+                                    <input type="radio" class="btn-check" name="freq" id="weekly">
+                                    <label class="btn btn-outline-secondary btn-sm" for="weekly">Weekly</label>
+                                    <input type="radio" class="btn-check" name="freq" id="monthly">
+                                    <label class="btn btn-outline-secondary btn-sm" for="monthly">Monthly</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-dark w-100 py-2 fw-bold perform-transaction">
+                        <i class="fas fa-lock me-2"></i> Secure Funds
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. VAULT WITHDRAWAL MODAL (Biometric Security) -->
+<div class="modal fade" id="vaultWithdrawModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg overflow-hidden">
+            <div class="modal-header border-0 bg-danger text-white">
+                <h5 class="modal-title fw-bold"><i class="fas fa-shield-alt me-2"></i>Security Check</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Step 1: Input Amount -->
+            <div class="modal-body p-4 text-center" id="withdrawStep1">
+                <p class="text-muted small mb-3">Enter amount to withdraw to Main Wallet.</p>
+                <div class="input-group mb-4">
+                    <span class="input-group-text fw-bold">N</span>
+                    <input type="number" class="form-control" id="withdrawAmount" placeholder="0.00">
+                </div>
+                <button class="btn btn-danger w-100 fw-bold" onclick="initiateVaultAuth()">
+                    Proceed to Scan
+                </button>
+            </div>
+
+            <!-- Step 2: Biometric Scan -->
+            <div class="modal-body p-4 text-center d-none" id="withdrawStep2">
+                <h6 class="fw-bold mb-3 text-danger">Ring Finger Required</h6>
+                
+                <!-- Scanner Animation Container -->
+                <div class="bio-scanner-container mx-auto mb-3">
+                    <div class="scan-grid"></div>
+                    <i class="fas fa-fingerprint bio-print-icon"></i>
+                    <div class="scan-laser"></div>
+                </div>
+
+                <p class="small text-muted" id="scanStatusText">Waiting for sensor...</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="pack.js"></script>
+
+</body>
+</html>

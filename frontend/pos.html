@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FingerPay POS Terminal</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link href="pos.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Link to Dashboards (Demo Purpose) -->
+    <div class="demo-nav">
+        <a href="agentDB.html" class="demo-link agent">Ag</a>
+        <a href="merchantDB.html" class="demo-link merchant">Mer</a>
+    </div>
+
+    <!-- The Physical Device Wrapper -->
+    <div class="device-container">
+        
+        <!-- 1. The Printed Receipt (Hidden initially) -->
+        <div class="paper-receipt" id="paperReceipt">
+            <div class="receipt-content">
+                <i class="bi bi-fingerprint"></i>
+                <h4>FingerPay</h4>
+                <p>MERCHANT: MAMA NKECHI</p>
+                <hr class="dashed">
+                <div class="r-row"><span>SALE</span><span>APPROVED</span></div>
+                <div class="r-row"><span>AMT:</span><span class="r-total">N5,000.00</span></div>
+                <hr class="dashed">
+                <p class="tiny">AID: A0000000041010</p>
+                <p class="tiny">Thanks for using FingerPay</p>
+            </div>
+            <div class="tear-edge"></div>
+        </div>
+
+        <!-- 2. The POS Hardware Body -->
+        <div class="pos-body">
+            
+            <!-- Hardware Top: Printer & LEDs -->
+            <div class="hardware-top">
+                <div class="printer-slot"></div>
+                <div class="led-indicators">
+                    <div class="led green on"></div>
+                    <div class="led yellow"></div>
+                    <div class="led red"></div>
+                    <div class="led blue"></div> <!-- NFC -->
+                </div>
+            </div>
+
+            <!-- Hardware Bezel & Camera -->
+            <div class="screen-bezel">
+                <div class="camera-notch">
+                    <div class="camera-lens"></div>
+                    <div class="sensor-dot"></div>
+                </div>
+                
+                <!-- 3. The Digital Screen (The App) -->
+                <div class="screen" id="mainScreen">
+                    
+                    <!-- Status Bar -->
+                    <div class="status-bar">
+                        <span id="clock">12:30 PM</span>
+                        <div class="status-icons">
+                            <i class="bi bi-wifi"></i>
+                            <i class="bi bi-reception-4"></i>
+                            <i class="bi bi-battery-full"></i>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 1: BOOT / LOCK SCREEN -->
+                    <div class="view view-lock active" id="viewLock">
+                        <div class="lock-content">
+                            <i class="bi bi-fingerprint text-accent display-1 pulse"></i>
+                            <h3>FingerPay</h3>
+                            <p>Terminal #99210</p>
+                            <button class="btn-unlock" onclick="unlockTerminal()">Tap to Start</button>
+                            
+                            <!-- Hidden Admin Menu -->
+                            <div class="admin-links mt-4">
+                                <small onclick="window.location.href='agentDB.html'">Switch to Agent Mode</small>
+                                <span class="mx-2">|</span>
+                                <small onclick="window.location.href='merchantDB.html'">Switch to Merchant</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 2: HOME DASHBOARD -->
+                    <div class="view view-home" id="viewHome">
+                        <div class="app-header">
+                            <div class="user-info">
+                                <img src="https://i.pravatar.cc/150?img=5" class="avatar">
+                                <div>
+                                    <span class="d-block fw-bold">Mama Nkechi</span>
+                                    <small>Merchant</small>
+                                </div>
+                            </div>
+                            <button class="btn-icon" onclick="lockTerminal()"><i class="bi bi-power"></i></button>
+                        </div>
+
+                        <div class="grid-menu">
+                            <button class="menu-item primary" onclick="startTransaction('Purchase')">
+                                <div class="icon-circle"><i class="bi bi-credit-card"></i></div>
+                                <span>Purchase</span>
+                            </button>
+                            <button class="menu-item secondary" onclick="startTransaction('CashOut')">
+                                <div class="icon-circle"><i class="bi bi-cash-stack"></i></div>
+                                <span>Cash Out</span>
+                            </button>
+                            <button class="menu-item" onclick="openRegisterMenu()">
+                                <div class="icon-circle"><i class="bi bi-person-plus"></i></div>
+                                <span>Register</span>
+                            </button>
+                            <button class="menu-item" onclick="openUtilities()">
+                                <div class="icon-circle"><i class="bi bi-broadcast"></i></div>
+                                <span>Data/Bills</span>
+                            </button>
+                            <button class="menu-item" onclick="checkBalance()">
+                                <div class="icon-circle"><i class="bi bi-wallet2"></i></div>
+                                <span>Balance</span>
+                            </button>
+                            <button class="menu-item" onclick="showHistory()">
+                                <div class="icon-circle"><i class="bi bi-clock-history"></i></div>
+                                <span>History</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 3: KEYPAD (Amount Entry) -->
+                    <div class="view view-keypad" id="viewKeypad">
+                        <div class="screen-nav">
+                            <button onclick="navigate('viewHome')"><i class="bi bi-arrow-left"></i></button>
+                            <span id="transTypeTitle">Purchase</span>
+                        </div>
+                        <div class="amount-display">
+                            <span class="currency">N</span>
+                            <span id="amountText">0.00</span>
+                        </div>
+                        <div class="keypad-grid">
+                            <button onclick="addNum(1)">1</button><button onclick="addNum(2)">2</button><button onclick="addNum(3)">3</button>
+                            <button onclick="addNum(4)">4</button><button onclick="addNum(5)">5</button><button onclick="addNum(6)">6</button>
+                            <button onclick="addNum(7)">7</button><button onclick="addNum(8)">8</button><button onclick="addNum(9)">9</button>
+                            <button class="btn-clear" onclick="clearNum()">C</button><button onclick="addNum(0)">0</button><button class="btn-ok" onclick="proceedToScan()">OK</button>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 4: SCANNING UI (Biometric/Card) -->
+                    <div class="view view-scan" id="viewScan">
+                        <div class="scan-animation-container">
+                            <div class="scan-circle"></div>
+                            <i class="bi bi-fingerprint" id="scanIcon"></i>
+                        </div>
+                        <h4 id="scanInstruction">Place Customer Finger</h4>
+                        <p class="blink">Waiting for sensor...</p>
+                        
+                        <div class="payment-methods">
+                            <span class="active"><i class="bi bi-fingerprint"></i> Bio</span>
+                            <span><i class="bi bi-wifi"></i> NFC</span>
+                            <span><i class="bi bi-qr-code-scan"></i> QR</span>
+                        </div>
+                        <button class="btn-cancel" onclick="navigate('viewHome')">Cancel</button>
+                    </div>
+
+                    <!-- VIEW 5: REGISTRATION WIZARD -->
+                    <div class="view view-register" id="viewRegister">
+                        <div class="screen-nav">
+                            <button onclick="navigate('viewHome')"><i class="bi bi-arrow-left"></i></button>
+                            <span>New Enrollment</span>
+                        </div>
+                        
+                        <!-- Step 1: Info -->
+                        <div class="reg-step active" id="regStep1">
+                            <label>NIN Number</label>
+                            <input type="number" class="pos-input" placeholder="11 Digits">
+                            <label>Phone Number</label>
+                            <input type="tel" class="pos-input" placeholder="080...">
+                            <button class="btn-block" onclick="nextRegStep(2)">Next <i class="bi bi-arrow-right"></i></button>
+                        </div>
+
+                        <!-- Step 2: Camera -->
+                        <div class="reg-step" id="regStep2">
+                            <div class="camera-viewfinder">
+                                <i class="bi bi-person-bounding-box"></i>
+                                <p>Align Face</p>
+                            </div>
+                            <button class="btn-block" onclick="capturePhoto()">Capture Photo</button>
+                        </div>
+
+                        <!-- Step 3: Fingerprints -->
+                        <div class="reg-step" id="regStep3">
+                            <div class="finger-guide">
+                                <i class="bi bi-hand-index-thumb"></i>
+                                <p>Place Right Index</p>
+                                <div class="progress-bar-thin"><div class="fill" id="regProgress"></div></div>
+                            </div>
+                            <button class="btn-block" onclick="completeRegistration()">Start Capture</button>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 6: SUCCESS -->
+                    <div class="view view-success" id="viewSuccess">
+                        <div class="success-icon-anim">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+                        <h3>Approved</h3>
+                        <p>Trans ID: 882910</p>
+                        <button class="btn-print" onclick="printReceiptAnim()">Print Customer Copy</button>
+                        <button class="btn-home" onclick="navigate('viewHome')">Close</button>
+                    </div>
+
+                </div> <!-- End Screen -->
+            </div> <!-- End Bezel -->
+
+            <!-- Hardware Chin: Physical Sensor -->
+            <div class="hardware-chin">
+                <div class="fingerprint-pad" id="physicalSensor" onclick="triggerSensorAction()">
+                    <div class="sensor-ring"></div>
+                    <i class="bi bi-fingerprint"></i>
+                </div>
+                <div class="nfc-logo">
+                    <i class="bi bi-contactless"></i>
+                </div>
+            </div>
+
+        </div> <!-- End POS Body -->
+    </div> <!-- End Device Container -->
+
+    <!-- Audio Effects -->
+    <audio id="beepSuccess" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="beepKey" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
+    <audio id="printSound" src="https://assets.mixkit.co/active_storage/sfx/2407/2407-preview.mp3"></audio>
+
+    <script src="pos.js"></script>
+</body>
+</html>

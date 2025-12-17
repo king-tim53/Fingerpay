@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FingerPay Business | Accept Payments</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <!-- Custom CSS -->
+  <link href="merchant.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark-blue py-3 sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <i class="bi bi-fingerprint text-info fs-4"></i>
+        <span class="fw-bold font-heading">FingerPay <span class="text-info text-uppercase small" style="letter-spacing: 2px;">Business</span></span>
+      </a>
+      
+      <div class="ms-auto">
+        <a href="merchant-login.html" class="btn btn-outline-info rounded-pill px-4 fw-bold transition-btn">
+          <i class="bi bi-shop-window me-2"></i>Merchant Login
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-merchant text-white py-5 position-relative overflow-hidden">
+    <!-- Abstract Background -->
+    <div class="blob blob-blue"></div>
+    <div class="blob blob-purple"></div>
+    
+    <div class="container position-relative z-2 py-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-content">
+          <span class="badge bg-info bg-opacity-25 text-info border border-info mb-3 px-3">For Retail & Online</span>
+          <h1 class="display-4 fw-bold mb-4">Accept Payments with <br>Zero Downtime.</h1>
+          <p class="lead text-white-50 mb-4">Join 15,000+ businesses using FingerPay. No card failures, no fake alerts. Just instant biometric settlement for your physical store or online brand.</p>
+          <div class="d-flex gap-3">
+              <a href="#registration-form" class="btn btn-info text-dark btn-lg rounded-pill px-5 fw-bold shadow-lg hover-lift">Create Business Account</a>
+              <a href="#requirements" class="btn btn-outline-light btn-lg rounded-pill px-4">Requirements</a>
+          </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block text-end">
+            <!-- Glass Card Effect -->
+            <div class="merchant-card-glass p-4 rounded-4 text-start ms-auto" style="max-width: 450px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-white p-2 rounded"><i class="bi bi-shop fs-3 text-dark"></i></div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">My Shop</h6>
+                            <small class="text-white-50">Business Account</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-success">Active</span>
+                </div>
+                <h2 class="fw-bold mb-1">N4,250,500.00</h2>
+                <small class="text-info mb-4 d-block"><i class="bi bi-arrow-up-right"></i> +12% this week</small>
+                <div class="bg-white bg-opacity-10 p-3 rounded mb-2 d-flex justify-content-between">
+                    <span>New Sale</span>
+                    <span class="fw-bold">+ N15,000</span>
+                </div>
+                <div class="bg-white bg-opacity-10 p-3 rounded d-flex justify-content-between">
+                    <span>Settlement</span>
+                    <span class="fw-bold text-warning">Pending</span>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section 1: Info & Requirements -->
+  <section id="requirements" class="section py-5">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h6 class="text-primary fw-bold text-uppercase">Checklist</h6>
+        <h2 class="fw-bold text-dark-blue">Required Documents</h2>
+        <p class="text-muted">Have these ready for a smooth onboarding process.</p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <!-- Req 1 -->
+        <div class="col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm p-4 text-center hover-scale">
+            <div class="icon-box bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+              <i class="bi bi-person-vcard fs-3"></i>
+            </div>
+            <h5 class="fw-bold">Valid Identity</h5>
+            <p class="text-muted small">Owner's NIN, Drivers License, or International Passport.</p>
+          </div>
+        </div>
+        <!-- Req 2 -->
+        <div class="col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm p-4 text-center hover-scale">
+            <div class="icon-box bg-info bg-opacity-10 text-info mx-auto mb-3">
+              <i class="bi bi-briefcase fs-3"></i>
+            </div>
+            <h5 class="fw-bold">CAC Documents</h5>
+            <p class="text-muted small">Certificate of Incorporation (RC Number) if a registered company.</p>
+          </div>
+        </div>
+        <!-- Req 3 -->
+        <div class="col-md-4 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm p-4 text-center hover-scale">
+            <div class="icon-box bg-warning bg-opacity-10 text-warning mx-auto mb-3">
+              <i class="bi bi-camera fs-3"></i>
+            </div>
+            <h5 class="fw-bold">Proof of Business</h5>
+            <p class="text-muted small">Photo of Shop (Physical) OR Website/Social Link (Online).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Registration Process -->
+  <section class="bg-white py-5 border-top border-bottom">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1556740758-90de6b306752?auto=format&fit=crop&q=80&w=800" alt="Process" class="img-fluid rounded-4 shadow-lg">
+            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <h6 class="text-primary fw-bold text-uppercase">Onboarding</h6>
+                <h2 class="fw-bold mb-4 text-dark-blue">Go Live in 24 Hours</h2>
+                
+                <div class="process-step d-flex mb-4">
+                    <div class="step-num bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold">1</div>
+                    <div>
+                        <h5 class="fw-bold">Submit Details</h5>
+                        <p class="text-muted small">Fill the form below. Select if you are a Physical Shop or Online Business.</p>
+                    </div>
+                </div>
+                
+                <div class="process-step d-flex mb-4">
+                    <div class="step-num bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold">2</div>
+                    <div>
+                        <h5 class="fw-bold">Verification</h5>
+                        <p class="text-muted small">Our team verifies your KYC and Business Address (or Web URL) within 24 hours.</p>
+                    </div>
+                </div>
+
+                <div class="process-step d-flex">
+                    <div class="step-num bg-dark-blue text-white rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold">3</div>
+                    <div>
+                        <h5 class="fw-bold">Activation & POS</h5>
+                        <p class="text-muted small">Receive your Merchant ID. Physical stores get a Biometric POS dispatched immediately.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Detailed Registration Form -->
+  <section id="registration-form" class="section py-5 bg-light-blue">
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-9">
+          <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="card-header bg-dark-blue text-white p-4 text-center border-0">
+              <h3 class="fw-bold mb-0">Merchant Registration</h3>
+              <p class="mb-0 text-info opacity-75">Start accepting biometric payments today</p>
+            </div>
+            <div class="card-body p-5 bg-white">
+              
+              <form id="merchantForm">
+                
+                <!-- Business Type Toggle -->
+                <div class="mb-4 text-center">
+                    <label class="form-label fw-bold d-block mb-2">Select Business Type</label>
+                    <div class="btn-group w-100 w-md-50" role="group">
+                        <input type="radio" class="btn-check" name="bizType" id="typePhysical" value="physical" checked autocomplete="off">
+                        <label class="btn btn-outline-primary" for="typePhysical"><i class="bi bi-shop me-2"></i>Physical Shop</label>
+                      
+                        <input type="radio" class="btn-check" name="bizType" id="typeOnline" value="online" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="typeOnline"><i class="bi bi-globe me-2"></i>Online Business</label>
+                    </div>
+                </div>
+
+                <!-- 1. Business Info -->
+                <h6 class="text-uppercase text-primary fw-bold mb-3 border-bottom pb-2">Business Information</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Business Name</label>
+                        <input type="text" class="form-control" placeholder="e.g. Ade Ventures" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Business Category</label>
+                        <select class="form-select">
+                            <option>Retail / Supermarket</option>
+                            <option>Food & Drink</option>
+                            <option>Services (Salon, Repair)</option>
+                            <option>Health / Pharmacy</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Official Email</label>
+                        <input type="email" class="form-control" placeholder="biz@example.com" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Business Phone</label>
+                        <input type="tel" class="form-control" placeholder="080..." required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold small">Head Office Address</label>
+                        <textarea class="form-control" rows="2" required></textarea>
+                    </div>
+                </div>
+
+                <!-- 2. Owner & Manager Info -->
+                <h6 class="text-uppercase text-primary fw-bold mb-3 border-bottom pb-2 pt-2">Personnel Details</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Owner's Full Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Owner's Phone</label>
+                        <input type="tel" class="form-control" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small">Owner's Residential Address</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small">Manager in Charge (If different)</label>
+                        <input type="text" class="form-control" placeholder="Leave blank if Owner manages">
+                    </div>
+                </div>
+
+                <!-- 3. Documents & Proof -->
+                <h6 class="text-uppercase text-primary fw-bold mb-3 border-bottom pb-2 pt-2">Verification Documents</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">NIN Number</label>
+                        <input type="text" class="form-control" placeholder="11 Digits" maxlength="11" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Upload Passport Photo</label>
+                        <input type="file" class="form-control" accept="image/*" required>
+                    </div>
+
+                    <!-- DYNAMIC FIELDS -->
+                    <!-- Shown for Physical -->
+                    <div class="col-12" id="field-shop-pic">
+                        <label class="form-label fw-bold small text-dark-blue"><i class="bi bi-camera-fill me-1"></i> Picture of Business Office/Shop</label>
+                        <input type="file" class="form-control" accept="image/*">
+                        <div class="form-text">Upload a clear photo of your shop front showing the signboard.</div>
+                    </div>
+
+                    <!-- Shown for Online -->
+                    <div class="col-12 d-none" id="field-online-link">
+                        <label class="form-label fw-bold small text-info"><i class="bi bi-link-45deg me-1"></i> Website or Social Media Handle</label>
+                        <div class="input-group">
+                            <span class="input-group-text">https://</span>
+                            <input type="text" class="form-control" placeholder="www.yoursite.com or instagram.com/handle">
+                        </div>
+                        <div class="form-text">We will verify your online presence.</div>
+                    </div>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" required id="termsCheck">
+                    <label class="form-check-label small" for="termsCheck">
+                        I agree to FingerPay's Merchant Terms of Service and Anti-Money Laundering (AML) policy.
+                    </label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-pill shadow">Submit Application</button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark-blue text-white py-4 text-center">
+    <div class="container">
+      <p class="mb-0 small opacity-75">&copy; 2025 FingerPay Merchant Services.</p>
+    </div>
+  </footer>
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="merchantSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4 border-0 shadow-lg">
+            <div class="mb-3 text-info"><i class="bi bi-check-circle-fill display-3"></i></div>
+            <h4 class="fw-bold text-dark-blue">Application Received!</h4>
+            <p class="text-muted">Welcome to the Business Network. Your Reference ID is <strong class="text-primary">MER-PEND-882</strong>.</p>
+            <p class="small text-muted">We have sent a confirmation email. A verification officer will contact you shortly.</p>
+            <a href="index.html" class="btn btn-outline-primary rounded-pill mt-2">Back to Home</a>
+        </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="merchant.js"></script>
+
+</body>
+</html>
