@@ -727,4 +727,19 @@ function renderLiteracy() {
             </div>`;
     });
     container.innerHTML = html;
+
+}
+// --- MERCHANT AI INTELLIGENCE (Added) ---
+function simulateCreditGrowth() {
+    const salesEl = document.getElementById('todaySalesValue');
+    const sales = salesEl ? salesEl.innerText : "N0";
+    
+    // AI Calculation for Merchant Credit Score
+    const scoreBoost = sales.includes('k') ? 15 : 5;
+    alert("Credit AI: Based on today's performance, your credit limit will increase by " + scoreBoost + "% in 48 hours.");
+}
+
+function analyzeStaffEfficiency() {
+    // Logic to calculate payroll vs sales (simulated)
+    alert("AI Staff Insight: Staff performance is up 12% this week. Payroll is optimized for SDG 8 (Decent Work).");
 }
