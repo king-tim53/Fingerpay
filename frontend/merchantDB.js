@@ -1,13 +1,30 @@
 // ==========================================
 // 1. INITIALIZATION & SETUP
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     
+    // Check authentication
+    if (!FingerPayAPI.auth.isAuthenticated()) {
+        alert('Please login to access the dashboard');
+        window.location.href = 'merchant-login.html';
+        return;
+    }
+
+    // Verify user is a merchant
+    const userType = localStorage.getItem('userType');
+    if (userType !== 'merchant') {
+        alert('Access denied. Merchant account required.');
+        window.location.href = 'merchant-login.html';
+        return;
+    }
+
     // A. Set Current Date
     const dateOpts = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
     const dateEl = document.getElementById('currentDate');
     if(dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', dateOpts);
 
+    // Load merchant dashboard data
+    await loadMerchantDashboard();
     
     // C. Mobile Sidebar Toggle
     const menuBtn = document.getElementById('menuToggle');
@@ -31,6 +48,74 @@ document.addEventListener('DOMContentLoaded', () => {
     // E. Link Specific Buttons that might need dynamic listeners (Optional safety)
     // Most buttons are handled via onclick attributes in HTML or specific ID listeners below
 });
+
+// Load merchant dashboard data from API
+async function loadMerchantDashboard() {
+    try {
+        // Fetch merchant profile
+        const profileResponse = await FingerPayAPI.merchant.getProfile();
+        updateMerchantProfile(profileResponse.data);
+
+        // Fetch dashboard data
+        const dashboardResponse = await FingerPayAPI.merchant.getDashboard();
+        updateMerchantStats(dashboardResponse.data);
+
+        // Fetch transactions
+        const transactionsResponse = await FingerPayAPI.merchant.getTransactions();
+        updateTransactionsList(transactionsResponse.data);
+
+    } catch (error) {
+        console.error('Failed to load dashboard:', error);
+        alert('Failed to load dashboard data: ' + (error.message || 'Please try again'));
+    }
+}
+
+// Update merchant profile
+function updateMerchantProfile(merchant) {
+    if (merchant) {
+        document.getElementById('merchantName')?.textContent = merchant.businessName || 'Merchant';
+        document.getElementById('merchantEmail')?.textContent = merchant.email || '';
+        document.getElementById('merchantPhone')?.textContent = merchant.phone || '';
+        document.getElementById('merchantId')?.textContent = merchant.merchantId || '';
+    }
+}
+
+// Update dashboard statistics
+function updateMerchantStats(data) {
+    if (data && data.stats) {
+        document.getElementById('totalTransactions')?.textContent = data.stats.totalTransactions || 0;
+        document.getElementById('totalRevenue')?.textContent = `₦${(data.stats.totalRevenue || 0).toLocaleString()}`;
+        document.getElementById('monthlyRevenue')?.textContent = `₦${(data.stats.monthlyRevenue || 0).toLocaleString()}`;
+        document.getElementById('todayRevenue')?.textContent = `₦${(data.stats.todayRevenue || 0).toLocaleString()}`;
+    }
+}
+
+// Update transactions list
+function updateTransactionsList(transactions) {
+    const listElement = document.getElementById('transactionsList');
+    if (!listElement) return;
+
+    if (!transactions || transactions.length === 0) {
+        listElement.innerHTML = '<p class="text-muted text-center py-4">No transactions yet</p>';
+        return;
+    }
+
+    listElement.innerHTML = transactions.map(txn => `
+        <div class="card mb-2">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">₦${txn.amount.toLocaleString()}</h6>
+                        <small class="text-muted">${new Date(txn.createdAt).toLocaleString()}</small>
+                    </div>
+                    <span class="badge bg-${txn.status === 'completed' ? 'success' : 'warning'}">
+                        ${txn.status}
+                    </span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
 
 
 // ==========================================
@@ -854,3 +939,11 @@ function boostCreditScore() {
 
 // Helper: Toast (Same structure)
 function showToast(msg, type = 'success') { /* ... see pack.js implementation ... */ }
+
+// Logout function
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        FingerPayAPI.auth.logout();
+        window.location.href = 'merchant-login.html';
+    }
+}

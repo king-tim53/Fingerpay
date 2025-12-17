@@ -37,9 +37,14 @@ exports.registerCustomer = async (req, res) => {
     }
 
     // Check if customer already exists
-    const existingCustomer = await Customer.findOne({ $or: [{ email }, { phone }] });
-    if (existingCustomer) {
-      return res.status(400).json(errorResponse('Customer with this email or phone already exists'));
+    const existingEmail = await Customer.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json(errorResponse('A customer with this email already exists'));
+    }
+
+    const existingPhone = await Customer.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json(errorResponse('A customer with this phone number already exists'));
     }
 
     // Hash password (temporary fingerId until biometric enrollment)
@@ -169,9 +174,14 @@ exports.enrollCustomer = async (req, res) => {
     }
 
     // Check if customer already exists
-    const existingCustomer = await Customer.findOne({ $or: [{ email }, { phone }] });
-    if (existingCustomer) {
-      return res.status(400).json(errorResponse('Customer with this email or phone already exists'));
+    const existingEmail = await Customer.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json(errorResponse('A customer with this email already exists'));
+    }
+
+    const existingPhone = await Customer.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json(errorResponse('A customer with this phone number already exists'));
     }
 
     // Hash biometric data

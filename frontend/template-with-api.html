@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FingerPay - Page Template</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Your custom CSS -->
+    <link href="your-styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Your page content here -->
+    <div class="container">
+        <h1>Welcome to FingerPay</h1>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- IMPORTANT: Include these in order -->
+    <!-- 1. Configuration (must be first) -->
+    <script src="config.js"></script>
+    
+    <!-- 2. API Client (must be second) -->
+    <script src="api.js"></script>
+    
+    <!-- 3. Your page-specific script (must be last) -->
+    <script src="your-page-script.js"></script>
+    
+    <!-- Example of inline script using the API -->
+    <script>
+        // Now you can use FingerPayAPI in your inline scripts
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!FingerPayAPI.auth.isAuthenticated()) {
+                console.log('User not authenticated');
+                // Redirect to login if needed
+                // window.location.href = 'log.html';
+                return;
+            }
+            
+            // Use the API
+            try {
+                const health = await FingerPayAPI.health.check();
+                console.log('API Status:', health.message);
+            } catch (error) {
+                console.error('API Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
