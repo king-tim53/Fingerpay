@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Portal Login | FingerPay</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --merch-primary: #0d6efd; /* Blue */
+            --merch-accent: #0dcaf0;  /* Cyan */
+            --merch-dark: #0b1c33;    /* Deep Navy */
+            --merch-glass: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--merch-dark);
+            /* Abstract Blue Background */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(13, 202, 240, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(13, 110, 253, 0.15) 0%, transparent 40%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Back Link */
+        .back-link {
+            position: absolute;
+            top: 20px; left: 20px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .back-link:hover { color: var(--merch-accent); transform: translateX(-3px); }
+
+        /* Login Card */
+        .login-card {
+            background: var(--merch-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Accent Line */
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--merch-primary), var(--merch-accent));
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        .form-label {
+            color: var(--merch-accent);
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 12px 15px;
+        }
+        
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--merch-accent);
+            color: #fff;
+            box-shadow: 0 0 0 4px rgba(13, 202, 240, 0.15);
+        }
+
+        .input-group-text {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-right: none;
+            color: var(--merch-accent);
+        }
+
+        .merch-id-input {
+            font-family: 'Courier Prime', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--merch-primary), #0056b3);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        }
+
+        .btn-outline-cyan {
+            border: 1px solid var(--merch-accent);
+            color: var(--merch-accent);
+            background: transparent;
+            padding: 12px;
+            font-weight: 600;
+        }
+        .btn-outline-cyan:hover {
+            background: rgba(13, 202, 240, 0.1);
+            color: white;
+        }
+
+        /* Biometric Scanner Overlay */
+        .scanner-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 28, 51, 0.95);
+            z-index: 20;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+        }
+
+        .fingerprint-icon {
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .scan-beam {
+            position: absolute;
+            width: 100%; height: 3px;
+            background: var(--merch-accent);
+            box-shadow: 0 0 20px var(--merch-accent);
+            top: 0;
+            animation: scan 1.5s infinite ease-in-out;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .text-cyan { color: var(--merch-accent) !important; }
+    </style>
+</head>
+<body>
+
+    <a href="merchant.html" class="back-link"><i class="bi bi-arrow-left me-1"></i> Back to Business</a>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
+                
+                <div class="login-card">
+                    
+                    <!-- Scanner Overlay -->
+                    <div id="bioScanner" class="scanner-overlay">
+                        <div class="position-relative mb-4">
+                            <i class="bi bi-fingerprint fingerprint-icon" id="scanIcon"></i>
+                            <div class="scan-beam" id="scanBeam"></div>
+                        </div>
+                        <h5 class="text-white fw-bold mb-1" id="scanStatus">Scanning...</h5>
+                        <p class="text-white-50 small">Verify Identity</p>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="bg-primary bg-opacity-25 text-white rounded-3 d-inline-flex p-3 mb-3 border border-primary border-opacity-50 shadow">
+                            <i class="bi bi-shop-window fs-2"></i>
+                        </div>
+                        <h3 class="fw-bold text-white font-heading">Merchant Portal</h3>
+                        <p class="text-white-50 small">Manage your business & sales</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="merchantLoginForm">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">MERCHANT ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-workspace"></i></span>
+                                <input type="text" class="form-control merch-id-input" id="merchId" placeholder="MER-XXXXXX" maxlength="10" required autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">PASSWORD</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                <input type="password" class="form-control" id="merchPass" placeholder="••••••••" required>
+                                <button class="btn btn-outline-secondary border-start-0 border-white border-opacity-10" type="button" onclick="togglePass()">
+                                    <i class="bi bi-eye-slash text-white-50" id="passIcon"></i>
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <div class="form-check">
+                                    <input class="form-check-input bg-transparent border-secondary" type="checkbox" id="remember">
+                                    <label class="form-check-label text-white-50 small" for="remember">Remember me</label>
+                                </div>
+                                <a href="#" class="text-cyan small text-decoration-none">Forgot Password?</a>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary rounded-pill">Sign In</button>
+                            
+                            <div class="d-flex align-items-center justify-content-center gap-2 text-white-50 small my-1">
+                                <span style="height:1px; width:30px; background:rgba(255,255,255,0.2)"></span> OR <span style="height:1px; width:30px; background:rgba(255,255,255,0.2)"></span>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-cyan rounded-pill" onclick="startBiometricAuth()">
+                                <i class="bi bi-fingerprint me-2"></i> Biometric Login
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <div class="text-center mt-4 border-top border-white border-opacity-10 pt-3">
+                        <p class="text-white-50 small mb-0">New Business? <a href="merchant.html#registration-form" class="text-white fw-bold text-decoration-none">Create Account</a></p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="loginToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Error message here
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 1. Auto-Format Merchant ID (MER-XXXXXX)
+        const merchInput = document.getElementById('merchId');
+        
+        merchInput.addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
+            
+            // Force MER prefix
+            if (!value.startsWith('MER')) {
+                if (value.length > 0 && !value.includes('MER')) {
+                     value = 'MER' + value;
+                }
+            }
+            
+            // Add hyphen after MER
+            if (value.length > 3 && !value.includes('-')) {
+                value = value.slice(0, 3) + '-' + value.slice(3);
+            }
+            
+            // Limit length
+            e.target.value = value.slice(0, 10);
+        });
+
+        // 2. Password Toggle
+        function togglePass() {
+            const input = document.getElementById('merchPass');
+            const icon = document.getElementById('passIcon');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            } else {
+                input.type = "password";
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            }
+        }
+
+        // 3. Biometric Login Logic
+        function startBiometricAuth() {
+            const scanner = document.getElementById('bioScanner');
+            const icon = document.getElementById('scanIcon');
+            const beam = document.getElementById('scanBeam');
+            const status = document.getElementById('scanStatus');
+            
+            scanner.style.display = 'flex';
+            
+            // Step 1: Scanning
+            setTimeout(() => {
+                icon.style.color = 'var(--merch-accent)'; // Cyan
+                status.innerText = "Analyzing Print...";
+            }, 1000);
+
+            // Step 2: Success
+            setTimeout(() => {
+                beam.style.display = 'none';
+                icon.className = 'bi bi-check-circle-fill fingerprint-icon';
+                icon.style.color = '#198754'; // Success Green
+                status.innerText = "Verified!";
+                status.className = "text-success fw-bold mb-1";
+            }, 2500);
+
+            // Step 3: Redirect
+            setTimeout(() => {
+                // Since merchantDB.html is next, we placeholder alert
+                window.location.href = 'merchantDB.html'; 
+                
+                
+            }, 3500);
+        }
+
+        // 4. Form Submit
+        document.getElementById('merchantLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('merchId').value;
+            
+            if (id.length >= 7) {
+                const btn = this.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.textContent = "Authenticating...";
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    alert("Welcome Back! Redirecting...");
+                    // window.location.href = 'merchantDB.html';
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 1500);
+            } else {
+                showToast("Invalid Merchant ID format");
+            }
+        });
+
+        function showToast(msg) {
+            const toastEl = document.getElementById('loginToast');
+            document.getElementById('toastMessage').textContent = msg;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    </script>
+</body>
+</html>
