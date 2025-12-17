@@ -6,6 +6,7 @@ const agentRoutes = require('./agentRoutes');
 const customerRoutes = require('./customerRoutes');
 const merchantRoutes = require('./merchantRoutes');
 const transactionRoutes = require('./transactionRoutes');
+const aiRoutes = require('./aiRoutes');
 
 // Health check route
 router.get('/health', (req, res) => {
@@ -32,5 +33,6 @@ router.use('/agents', agentRoutes);
 router.use('/customers', customerRoutes);
 router.use('/merchants', merchantRoutes);
 router.use('/transactions', transactionRoutes);
+router.use('/ai', aiRoutes);
 
 module.exports = router;
