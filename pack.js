@@ -1,0 +1,388 @@
+/**
+ * ==========================================
+ * MASTER JAVASCRIPT FILE
+ * Includes: Navigation, Dashboard, Credit AI,
+ * FinAgent, and FinCoach AI.
+ * ==========================================
+ */
+
+// --- 1. GLOBAL NAVIGATION LOGIC (Must be at the top) ---
+function showSection(sectionName) {
+    // List of all possible sections
+    const allSections = [
+        'dashboard-section', 
+        'wallet-section', 
+        'credit-section', 
+        'finagent-section', 
+        'section-fincoach'
+    ];
+
+    // Hide all sections
+    allSections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add('d-none');
+            el.classList.remove('fade-in');
+        }
+    });
+
+    // Determine target ID
+    let targetId = '';
+    if (sectionName === 'fincoach') targetId = 'section-fincoach';
+    else if (sectionName === 'credit') targetId = 'credit-section';
+    else if (sectionName === 'finagent') targetId = 'finagent-section';
+    else if (sectionName === 'wallet') targetId = 'wallet-section';
+    else targetId = 'dashboard-section'; // Default
+
+    // Show Target
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+        targetElement.classList.remove('d-none');
+        setTimeout(() => targetElement.classList.add('fade-in'), 50);
+    }
+
+    // Update Sidebar Active State
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active', 'bg-gradient-primary', 'shadow');
+        if(link.getAttribute('onclick') && link.getAttribute('onclick').includes(sectionName)) {
+            link.classList.add('active', 'bg-gradient-primary', 'shadow');
+        }
+    });
+}
+
+// --- 2. GLOBAL UTILITIES (Helpers) ---
+window.copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+        // Simple alert fallback if toast doesn't exist
+        const toastEl = document.getElementById('liveToast');
+        if(toastEl) new bootstrap.Toast(toastEl).show();
+        else alert("Copied to clipboard!");
+    });
+};
+
+window.saveConfig = (element) => {
+    const originalBorder = element.style.borderColor;
+    element.style.borderColor = '#198754';
+    setTimeout(() => element.style.borderColor = originalBorder, 500);
+};
+
+// --- 3. DOM CONTENT LOADED (Runs when page is ready) ---
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // A. Greeting & Time
+    const updateTime = () => {
+        const now = new Date();
+        const dateEl = document.getElementById('current-date');
+        if(dateEl) dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+        
+        const hour = now.getHours();
+        let greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+        const greetEl = document.getElementById('greeting-msg');
+        if(greetEl) greetEl.textContent = `${greeting}, Jane`;
+    };
+    updateTime();
+
+    // B. Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    if(sidebar) {
+        document.getElementById('sidebar-toggle')?.addEventListener('click', () => sidebar.classList.toggle('toggled'));
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => sidebar.classList.toggle('toggled'));
+    }
+
+    // C. Balance Toggle
+    const balanceEl = document.getElementById('balanceValue');
+    const toggleIcon = document.getElementById('toggleBalance');
+    if(balanceEl && toggleIcon) {
+        const actualBalance = balanceEl.textContent;
+        let isHidden = false;
+        toggleIcon.addEventListener('click', () => {
+            isHidden = !isHidden;
+            balanceEl.textContent = isHidden ? '****' : actualBalance;
+            toggleIcon.classList.replace(isHidden ? 'fa-eye' : 'fa-eye-slash', isHidden ? 'fa-eye-slash' : 'fa-eye');
+        });
+    }
+
+    // D. Chart.js Config
+    const ctx = document.getElementById('spendingChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Spend',
+                    data: [15000, 22000, 5000, 8500, 12000, 45000, 18000],
+                    borderColor: '#00C853',
+                    backgroundColor: 'rgba(0, 200, 83, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { display: false }, y: { display: false } }
+            }
+        });
+    }
+
+    // E. FingerVault Logic (Withdrawal & Interest)
+    const depositInput = document.getElementById('depositAmount');
+    if (depositInput) {
+        depositInput.addEventListener('input', (e) => {
+            const amount = parseFloat(e.target.value) || 0;
+            const interest = (amount * 0.12) / 12; 
+            document.getElementById('interestPreview').textContent = amount > 0 ? `+N${interest.toFixed(2)} (est. monthly)` : `+N0.00`;
+        });
+    }
+
+    window.initiateVaultAuth = () => {
+        const amount = document.getElementById('withdrawAmount').value;
+        if (!amount) return alert("Please enter an amount.");
+
+        document.getElementById('withdrawStep1').classList.add('d-none');
+        document.getElementById('withdrawStep2').classList.remove('d-none');
+        
+        const statusText = document.getElementById('scanStatusText');
+        const scannerBox = document.querySelector('.bio-scanner-container');
+
+        statusText.textContent = "Place Ring Finger on Sensor...";
+        setTimeout(() => {
+            statusText.textContent = "Scanning Biometric ID...";
+            statusText.classList.add('text-warning');
+        }, 1000);
+
+        setTimeout(() => {
+            scannerBox?.classList.add('success');
+            statusText.innerHTML = '<i class="fas fa-check-circle me-1"></i> Match Confirmed';
+            statusText.className = 'text-success fw-bold small';
+            
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('vaultWithdrawModal'));
+                if(modal) modal.hide();
+                alert(`Success! N${amount} moved to wallet.`); // Simplified success for brevity
+                
+                // Reset
+                document.getElementById('withdrawStep1').classList.remove('d-none');
+                document.getElementById('withdrawStep2').classList.add('d-none');
+                scannerBox?.classList.remove('success');
+            }, 1500);
+        }, 3000);
+    };
+
+    // F. Logout Logic
+    const logoutBtn = document.getElementById('confirmLogoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            window.location.href = "log.html";
+        });
+    }
+});
+
+// ==========================================
+// 4. FINCOACH AI LOGIC (Chatbot)
+// ==========================================
+let chatState = 'idle'; 
+const chatHistory = document.getElementById('mainChatHistory');
+const chatInput = document.getElementById('mainChatInput');
+
+function handleMainEnter(e) {
+    if (e.key === 'Enter') sendMainChat();
+}
+
+function sendMainChat() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    addChatMessage(text, 'user');
+    chatInput.value = '';
+
+    const typingId = showTyping();
+    setTimeout(() => {
+        removeTyping(typingId);
+        processAiResponse(text.toLowerCase());
+    }, 800);
+}
+
+function triggerAiCommand(commandCode) {
+    let userText = "";
+    if(commandCode === '1') userText = "Start Jargon Buster";
+    else if(commandCode === '2') userText = "Sort my Salary";
+    else if(commandCode === 'health') userText = "Plan Health Fund";
+    else if(commandCode === 'story') userText = "Tell me a Finance Story";
+    else if(commandCode === 'bill') userText = "Explain Medical Bill";
+    else if(commandCode === 'sim') userText = "Simulate Savings";
+
+    addChatMessage(userText, 'user');
+    const typingId = showTyping();
+
+    setTimeout(() => {
+        removeTyping(typingId);
+        if(commandCode === '1') processAiResponse('1');
+        else if(commandCode === '2') processAiResponse('2');
+        else if(commandCode === 'health') new bootstrap.Modal(document.getElementById('healthPlanModal')).show();
+        else if(commandCode === 'story') tellStory();
+        else if(commandCode === 'bill') explainBill();
+        else if(commandCode === 'sim') new bootstrap.Modal(document.getElementById('savingsSimModal')).show();
+    }, 600);
+}
+
+function processAiResponse(input) {
+    let response = "";
+    if (['hi', 'hello', 'hey', 'menu'].includes(input)) {
+        response = `<strong>🤖 FinCoach Menu:</strong><br>Use buttons on left or type:<br>1️⃣ Jargon Buster<br>2️⃣ Salary Sorter<br>3️⃣ Impulse Control`;
+        chatState = 'idle';
+    } 
+    else if (input === '1' || input.includes('jargon')) {
+        response = `<strong>🌐 Select Language:</strong><br>A. Yoruba 🦁<br>B. Hausa 🐎<br>C. Igbo 🦅<br>D. Pidgin 🇳🇬`;
+        chatState = 'language';
+    } 
+    else if (input === '2' || input.includes('salary')) {
+        response = `<strong>💸 Salary Sorter:</strong><br>Inflow detected. <button class="btn btn-sm btn-success mt-2" onclick="new bootstrap.Modal(document.getElementById('salaryModal')).show()">Open Splitter</button>`;
+    }
+    else if (chatState === 'language') {
+        if (input === 'a') response = "<strong>E ka aaro!</strong> (Yoruba Mode Active)";
+        else if (input === 'b') response = "<strong>Sannu!</strong> (Hausa Mode Active)";
+        else if (input === 'c') response = "<strong>Ndeewo!</strong> (Igbo Mode Active)";
+        else if (input === 'd') response = "<strong>How far!</strong> (Pidgin Mode Active)";
+        else response = "Type A, B, C or D.";
+        chatState = 'idle';
+    }
+    else {
+        response = "I didn't catch that. Try saying <strong>'Menu'</strong>.";
+    }
+    addChatMessage(response, 'bot');
+}
+
+// FinCoach Helpers
+function tellStory() {
+    const stories = ["<strong>📖 Tortoise & Interest:</strong><br>Tortoise saved N100 daily. Hare bought carrots. Tortoise is now rich. Be like Tortoise.", "<strong>📖 Market Secret:</strong><br>Mama Nkechi separated shop money from house money. She got a loan. Be wise."];
+    addChatMessage(stories[Math.floor(Math.random() * stories.length)], 'bot');
+}
+
+function explainBill() {
+    addChatMessage(`<strong>🩺 Bill Analysis:</strong><br>Consultation: N5,000<br>Drugs: N15,000<br>Total: N20,000. Use Health Fund?`, 'bot');
+}
+
+function calculateHealthFund() {
+    const expenses = document.getElementById('healthExpenses').value;
+    const factor = document.getElementById('healthDependents').value;
+    if(!expenses) return;
+    const target = (expenses * 6) * factor;
+    bootstrap.Modal.getInstance(document.getElementById('healthPlanModal')).hide();
+    addChatMessage(`<strong>🚑 Target Fund:</strong><br><h3 class="text-danger">N${target.toLocaleString()}</h3>Save N${(target/12).toLocaleString()}/mo.`, 'bot');
+}
+
+function runSavingsSim() {
+    const amount = document.getElementById('simAmount').value;
+    const days = document.getElementById('simDuration').value;
+    if(!amount) return;
+    const total = amount * days;
+    const interest = total * 0.10;
+    bootstrap.Modal.getInstance(document.getElementById('savingsSimModal')).hide();
+    addChatMessage(`<strong>📈 Projection:</strong><br>Saved: N${total.toLocaleString()}<br>Interest: N${interest.toLocaleString()}<br><strong>Total: N${(total+interest).toLocaleString()}</strong>`, 'bot');
+}
+
+function addChatMessage(html, type) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-message ${type} fade-in`;
+    msgDiv.innerHTML = `<div class="message-content">${html}</div>`;
+    if(chatHistory) {
+        chatHistory.appendChild(msgDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+}
+
+function showTyping() {
+    const id = 'typing-' + Date.now();
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = 'chat-message bot';
+    div.innerHTML = '<div class="message-content">...</div>'; // Simplified dots
+    if(chatHistory) {
+        chatHistory.appendChild(div);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+    return id;
+}
+
+function removeTyping(id) {
+    const el = document.getElementById(id);
+    if(el) el.remove();
+}
+
+function clearChat() {
+    if(chatHistory) chatHistory.innerHTML = '';
+    processAiResponse('hi');
+}
+
+function executeAiAction(msg) {
+    document.querySelectorAll('.modal.show').forEach(m => bootstrap.Modal.getInstance(m).hide());
+    addChatMessage(`✅ ${msg}`, 'bot');
+}
+
+// ==========================================
+// 5. CREDIT AI & FINAGENT AI LOGIC
+// ==========================================
+
+// Credit AI
+function simulateGenerateCreditProfile() {
+    document.getElementById('aiInitialState').classList.add('d-none');
+    document.getElementById('aiLoadingState').classList.remove('d-none');
+    setTimeout(() => {
+        document.getElementById('aiLoadingState').classList.add('d-none');
+        document.getElementById('aiResultState').classList.remove('d-none');
+        document.getElementById('aiResultState').classList.add('fade-in');
+    }, 3000);
+}
+
+function selectLoan(amt) {
+    document.getElementById('loanPrincipal').textContent = 'N' + amt;
+    new bootstrap.Modal(document.getElementById('loanModal')).show();
+}
+
+function initiateLoanBiometrics() {
+    document.getElementById('loanStep1').classList.add('d-none');
+    document.getElementById('loanStep2').classList.remove('d-none');
+    setTimeout(() => {
+        bootstrap.Modal.getInstance(document.getElementById('loanModal')).hide();
+        alert("Loan Disbursed!");
+    }, 3000);
+}
+
+function runAdvancedSimulation() {
+    document.getElementById('simulationResult').classList.remove('d-none');
+    document.getElementById('simText').textContent = "Based on new stock, profit will rise by 15%.";
+}
+
+// FinAgent AI
+function summarizeDay() {
+    new bootstrap.Modal(document.getElementById('summaryModal')).show();
+}
+
+function requestFloatFromSummary() {
+    bootstrap.Modal.getInstance(document.getElementById('summaryModal')).hide();
+    new bootstrap.Modal(document.getElementById('requestFloatModal')).show();
+}
+
+function handleFloatRequest(e) {
+    e.preventDefault();
+    bootstrap.Modal.getInstance(document.getElementById('requestFloatModal')).hide();
+    alert("Float Request Sent!");
+}
+
+function optimizeRoute() {
+    const list = document.getElementById('routeList');
+    list.innerHTML = "Calculating...";
+    setTimeout(() => {
+        list.innerHTML = `<div class='list-group-item'>1. Market A (15 mins) <span class='badge bg-success'>Best</span></div>`;
+    }, 1000);
+}
+
+function generateIncidentReport() {
+    document.getElementById('incidentForm').classList.add('d-none');
+    document.getElementById('ticketResult').classList.remove('d-none');
+    document.getElementById('ticketText').textContent = "TICKET #99201: Printer Fault";
+}
