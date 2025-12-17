@@ -171,7 +171,12 @@ function showError(message) {
 // ==========================================
 
 // A. Section Switcher
-function showSection(sectionId, linkElement) {
+function showSection(sectionId, linkElement, event) {
+    // Prevent default link behavior
+    if (event) {
+        event.preventDefault();
+    }
+    
     // Hide all sections
     document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('d-none'));
     

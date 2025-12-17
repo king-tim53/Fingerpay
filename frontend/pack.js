@@ -50,6 +50,84 @@ function showSection(sectionName) {
     });
 }
 
+// --- 1B. API INTEGRATION ---
+async function loadCustomerDashboard() {
+    try {
+        // Get customer profile
+        const profileResponse = await FingerPayAPI.customer.getProfile();
+        const customer = profileResponse.data;
+
+        // Update greeting with actual name
+        const greetEl = document.getElementById('greeting-msg');
+        const hour = new Date().getHours();
+        let greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+        if (greetEl) {
+            greetEl.textContent = `${greeting}, ${customer.firstName}`;
+        }
+
+        // Update balance
+        const balanceEl = document.getElementById('balanceValue');
+        if (balanceEl) {
+            balanceEl.textContent = `₦${(customer.balance || 0).toLocaleString()}`;
+        }
+
+        // Update vault balance
+        const vaultEl = document.getElementById('vaultBalance');
+        if (vaultEl) {
+            vaultEl.textContent = `₦${(customer.vaultBalance || 0).toLocaleString()}`;
+        }
+
+        // Update profile information
+        document.getElementById('customerName')?.textContent = `${customer.firstName} ${customer.lastName}`;
+        document.getElementById('customerEmail')?.textContent = customer.email || '';
+        document.getElementById('customerPhone')?.textContent = customer.phone || '';
+        document.getElementById('customerFID')?.textContent = customer.fingerId || 'N/A';
+
+        // Get transaction history
+        const transactionsResponse = await FingerPayAPI.customer.getTransactions();
+        if (transactionsResponse.data && transactionsResponse.data.length > 0) {
+            updateTransactionHistory(transactionsResponse.data);
+        }
+
+        console.log('Customer dashboard loaded successfully');
+    } catch (error) {
+        console.error('Failed to load customer dashboard:', error);
+        if (error.status === 401) {
+            alert('Session expired. Please login again.');
+            FingerPayAPI.auth.logout();
+            window.location.href = 'log.html';
+        } else {
+            alert('Failed to load dashboard data: ' + (error.message || 'Please try again'));
+        }
+    }
+}
+
+function updateTransactionHistory(transactions) {
+    const tableBody = document.querySelector('#transactionHistory tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+    
+    transactions.slice(0, 10).forEach(txn => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><small class="text-muted">${new Date(txn.createdAt).toLocaleDateString()}</small></td>
+            <td><strong>${txn.type || 'Transaction'}</strong></td>
+            <td><span class="badge ${txn.status === 'completed' ? 'bg-success' : txn.status === 'pending' ? 'bg-warning' : 'bg-danger'}">${txn.status}</span></td>
+            <td class="text-end"><strong>₦${txn.amount.toLocaleString()}</strong></td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Logout function
+window.logout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+        FingerPayAPI.auth.logout();
+        window.location.href = 'log.html';
+    }
+};
+
 // --- 2. GLOBAL UTILITIES (Helpers) ---
 window.copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -67,7 +145,25 @@ window.saveConfig = (element) => {
 };
 
 // --- 3. DOM CONTENT LOADED (Runs when page is ready) ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    
+    // Check authentication
+    if (!FingerPayAPI.auth.isAuthenticated()) {
+        window.location.href = 'log.html';
+        return;
+    }
+
+    // Check user type
+    const userType = localStorage.getItem('userType');
+    if (userType !== 'customer') {
+        alert('Access denied. This dashboard is for customers only.');
+        FingerPayAPI.auth.logout();
+        window.location.href = 'log.html';
+        return;
+    }
+
+    // Load customer data from API
+    await loadCustomerDashboard();
     
     // A. Greeting & Time
     const updateTime = () => {

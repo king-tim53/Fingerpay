@@ -248,6 +248,65 @@ const API = {
     getStats: () => apiRequest('/transactions/stats/summary'),
   },
 
+  // ========== AI ENDPOINTS ==========
+  ai: {
+    // FinCoach AI (Customer)
+    finCoach: {
+      analyzeBudget: (data) => apiRequest('/ai/fincoach/analyze-budget', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+      
+      checkOverspending: (data) => apiRequest('/ai/fincoach/check-overspending', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+      
+      suggestVault: (data) => apiRequest('/ai/fincoach/suggest-vault', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    },
+
+    // Credit AI (Merchant)
+    creditAI: {
+      loanEligibility: () => apiRequest('/ai/credit/loan-eligibility', {
+        method: 'POST',
+      }),
+      
+      whatIf: (scenario, currentRevenue) => apiRequest('/ai/credit/what-if', {
+        method: 'POST',
+        body: JSON.stringify({ scenario, currentRevenue }),
+      }),
+      
+      businessHealth: () => apiRequest('/ai/credit/business-health', {
+        method: 'POST',
+      }),
+    },
+
+    // FinAgent AI (Agent)
+    finAgent: {
+      predictLiquidity: (data) => apiRequest('/ai/finagent/predict-liquidity', {
+        method: 'POST',
+        body: JSON.stringify(data || {}),
+      }),
+      
+      explainJargon: (term, language = 'pidgin') => apiRequest('/ai/finagent/explain-jargon', {
+        method: 'POST',
+        body: JSON.stringify({ term, language }),
+      }),
+      
+      optimizeCommissions: () => apiRequest('/ai/finagent/optimize-commissions', {
+        method: 'POST',
+      }),
+      
+      detectDuplicate: (data) => apiRequest('/ai/finagent/detect-duplicate', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    },
+  },
+
   // ========== AUTH HELPERS ==========
   auth: {
     setToken: setAuthToken,

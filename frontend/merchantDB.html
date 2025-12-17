@@ -32,14 +32,14 @@
             </div>
 
             <ul class="nav flex-column gap-2" id="sidebarNav">
-                <li class="nav-item"><a href="#" class="nav-link active" onclick="showSection('dashboard', this)"><i class="bi bi-grid-fill me-2"></i> Overview</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('sales', this)"><i class="bi bi-receipt me-2"></i> Sales & History</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('projects', this)"><i class="bi bi-bricks me-2"></i> Higher Projects</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('logistics', this)"><i class="bi bi-box-seam me-2"></i> POS Logistics</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('staff', this)"><i class="bi bi-people-fill me-2"></i> Staff & Payroll</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('settings', this)"><i class="bi bi-gear-fill me-2"></i> Settings</a></li>
+                <li class="nav-item"><a href="#" class="nav-link active" onclick="showSection('dashboard', this, event)"><i class="bi bi-grid-fill me-2"></i> Overview</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('sales', this, event)"><i class="bi bi-receipt me-2"></i> Sales & History</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('projects', this, event)"><i class="bi bi-bricks me-2"></i> Higher Projects</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('logistics', this, event)"><i class="bi bi-box-seam me-2"></i> POS Logistics</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('staff', this, event)"><i class="bi bi-people-fill me-2"></i> Staff & Payroll</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('settings', this, event)"><i class="bi bi-gear-fill me-2"></i> Settings</a></li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="showSection('credit', this)">
+                    <a href="#" class="nav-link" onclick="showSection('credit', this, event)">
                         <i class="bi bi-leaf"></i> Credit AI
                     </a>
                 </li>
@@ -76,11 +76,11 @@
                     
                     <div class="ms-auto d-flex align-items-center gap-4">
                         <!-- Profile is Clickable to go to Settings -->
-                        <div class="d-none d-md-block text-end cursor-pointer" onclick="showSection('settings', null)" title="Go to Settings">
+                        <div class="d-none d-md-block text-end cursor-pointer" onclick="event.preventDefault(); showSection('settings', null, event)" title="Go to Settings">
                             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">MER-LV2</span>
                             <small class="d-block text-muted small">Mama Nkechi Store</small>
                         </div>
-                        <div class="position-relative cursor-pointer" onclick="showSection('settings', null)">
+                        <div class="position-relative cursor-pointer" onclick="event.preventDefault(); showSection('settings', null, event)">
                             <img src="https://i.pravatar.cc/150?img=5" class="rounded-circle border border-2 border-primary" width="45">
                             <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-1"></span>
                         </div>
@@ -250,7 +250,7 @@
                 <!-- ================= SECTION 6: DETAILED SETTINGS ================= -->
                 <section id="settings-section" class="content-section d-none fade-in">
                     <div class="d-flex align-items-center mb-4">
-                        <button class="btn btn-white rounded-circle me-3 shadow-sm text-primary" onclick="showSection('dashboard', document.querySelector('.nav-link.active'))">
+                        <button class="btn btn-white rounded-circle me-3 shadow-sm text-primary" onclick="showSection('dashboard', document.querySelector('.nav-link.active'), event)">
                             <i class="bi bi-arrow-left"></i>
                         </button>
                         <div><h4 class="fw-bold mb-0">Business Settings</h4><small class="text-muted">Manage store profile & security.</small></div>
