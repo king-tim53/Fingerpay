@@ -743,3 +743,114 @@ function analyzeStaffEfficiency() {
     // Logic to calculate payroll vs sales (simulated)
     alert("AI Staff Insight: Staff performance is up 12% this week. Payroll is optimized for SDG 8 (Decent Work).");
 }
+/* ==========================================
+   MERCHANTDB.JS - Merchant / Credit AI
+   ========================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkInventoryRunway();
+    initCreditPulse();
+});
+
+// --- 1. INVENTORY RUNWAY (Stock Prediction) ---
+function checkInventoryRunway() {
+    // Mock Data
+    const stockLevel = 450; // Items
+    const dailySalesRate = 58; // Items per day
+
+    const daysLeft = Math.floor(stockLevel / dailySalesRate);
+    
+    if (daysLeft < 7) {
+        const modalHtml = `
+        <div class="modal fade" id="inventoryModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content border-danger">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">📉 Stock Alert</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Critical Low:</strong> Based on current sales speed, your inventory will finish in <strong>${daysLeft} days</strong>.</p>
+                        <p>FinCoach suggests restocking immediately to avoid revenue loss.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" onclick="orderStock()">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        new bootstrap.Modal(document.getElementById('inventoryModal')).show();
+    }
+}
+
+// --- 2. LOAN WHAT-IF SIMULATOR ---
+function calculateLoanImpact() {
+    const loanAmount = document.getElementById('loan-slider').value;
+    const profitDisplay = document.getElementById('loan-profit-display');
+
+    // Logic: Every N100,000 loan yields estimated 20% growth in inventory turnover
+    const estimatedGrowth = (loanAmount * 1.20).toLocaleString();
+    const costOfLoan = (loanAmount * 1.05).toLocaleString(); // 5% Interest
+
+    profitDisplay.innerHTML = `
+        <div class="card bg-light p-3 mt-2">
+            <div class="d-flex justify-content-between">
+                <span>Loan Amount:</span> <strong>N${parseInt(loanAmount).toLocaleString()}</strong>
+            </div>
+            <div class="d-flex justify-content-between text-success">
+                <span>Projected Revenue:</span> <strong>N${estimatedGrowth}</strong>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between fw-bold">
+                <span>Est. Net Profit:</span> <span>N${(loanAmount * 0.15).toLocaleString()}</span>
+            </div>
+        </div>
+    `;
+}
+
+// Attach listener if element exists
+const loanSlider = document.getElementById('loan-slider');
+if(loanSlider) loanSlider.addEventListener('input', calculateLoanImpact);
+
+
+// --- 3. DYNAMIC CREDIT SCORE (Visual Pulse) ---
+function initCreditPulse() {
+    // Simulate a sale happening
+    window.recordSale = function() {
+        let salesCount = parseInt(localStorage.getItem('salesCount')) || 0;
+        salesCount++;
+        localStorage.setItem('salesCount', salesCount);
+
+        // Every 5 sales, boost score
+        if (salesCount % 5 === 0) {
+            boostCreditScore();
+        }
+    };
+}
+
+function boostCreditScore() {
+    const scoreEl = document.getElementById('credit-score-text'); // The number text
+    const badgeEl = document.getElementById('score-badge'); // The container
+    
+    let currentScore = parseInt(scoreEl.innerText);
+    let newScore = currentScore + 2;
+
+    // 1. Update Text
+    scoreEl.innerText = newScore;
+    
+    // 2. Add Pulse Animation Class
+    badgeEl.classList.add('pulse-animation-green'); // Assumes CSS definition
+    
+    // 3. Show Toast
+    showToast(`🚀 Credit Score Upgraded! New Score: ${newScore}`, 'success');
+
+    // Remove animation class after 1s
+    setTimeout(() => {
+        badgeEl.classList.remove('pulse-animation-green');
+    }, 1000);
+}
+
+// Helper: Toast (Same structure)
+function showToast(msg, type = 'success') { /* ... see pack.js implementation ... */ }
