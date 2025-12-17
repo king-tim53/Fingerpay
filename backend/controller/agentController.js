@@ -31,9 +31,14 @@ exports.registerAgent = async (req, res) => {
     }
 
     // Check if agent already exists
-    const existingAgent = await Agent.findOne({ $or: [{ email }, { phone }] });
-    if (existingAgent) {
-      return res.status(400).json(errorResponse('Agent with this email or phone already exists'));
+    const existingEmail = await Agent.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json(errorResponse('An agent with this email already exists'));
+    }
+
+    const existingPhone = await Agent.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json(errorResponse('An agent with this phone number already exists'));
     }
 
     // Generate agent ID

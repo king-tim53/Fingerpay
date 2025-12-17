@@ -41,9 +41,14 @@ exports.registerMerchant = async (req, res) => {
     }
 
     // Check if merchant already exists
-    const existingMerchant = await Merchant.findOne({ $or: [{ email }, { phone }] });
-    if (existingMerchant) {
-      return res.status(400).json(errorResponse('Merchant with this email or phone already exists'));
+    const existingEmail = await Merchant.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json(errorResponse('A merchant with this email already exists'));
+    }
+
+    const existingPhone = await Merchant.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json(errorResponse('A merchant with this phone number already exists'));
     }
 
     // Generate merchant ID

@@ -1,43 +1,27 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     
+    // Check authentication
+    if (!FingerPayAPI.auth.isAuthenticated()) {
+        alert('Please login to access the dashboard');
+        window.location.href = 'log.html';
+        return;
+    }
+
+    // Verify user is an agent
+    const userType = localStorage.getItem('userType');
+    if (userType !== 'agent') {
+        alert('Access denied. Agent account required.');
+        window.location.href = 'log.html';
+        return;
+    }
+
     // 1. Set Current Date
     const dateElement = document.getElementById('currentDate');
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     dateElement.textContent = new Date().toLocaleDateString('en-US', options);
 
-    // 2. Dashboard Chart Configuration
-    const ctx = document.getElementById('dashboardChart');
-    if (ctx) {
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [
-                    {
-                        label: 'Registrations',
-                        data: [12, 19, 3, 5, 2, 8, 10], 
-                        backgroundColor: '#0A7A5E',
-                        borderRadius: 4,
-                    },
-                    {
-                        label: 'Earnings (x1000)',
-                        data: [6, 9.5, 1.5, 2.5, 1, 4, 5],
-                        backgroundColor: '#fbbf24',
-                        borderRadius: 4,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'top' } },
-                scales: {
-                    y: { beginAtZero: true, grid: { display: false } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-    }
+    // Load dashboard data from API
+    await loadDashboardData();
 
     // 3. Mobile Sidebar Toggle
     const toggleBtn = document.getElementById('sidebarToggle');
@@ -48,6 +32,139 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Load dashboard data from API
+async function loadDashboardData() {
+    try {
+        showLoading();
+
+        // Fetch agent profile
+        const profileResponse = await FingerPayAPI.agent.getProfile();
+        updateProfileUI(profileResponse.data);
+
+        // Fetch dashboard data
+        const dashboardResponse = await FingerPayAPI.agent.getDashboard();
+        updateDashboardStats(dashboardResponse.data);
+
+        // Fetch enrolled customers
+        const customersResponse = await FingerPayAPI.agent.getEnrolledCustomers();
+        updateCustomersList(customersResponse.data);
+
+        // Initialize chart with dashboard data
+        initializeChart(dashboardResponse.data);
+
+        hideLoading();
+    } catch (error) {
+        console.error('Failed to load dashboard:', error);
+        hideLoading();
+        showError('Failed to load dashboard data: ' + (error.message || 'Please try again'));
+    }
+}
+
+// Update profile information
+function updateProfileUI(agent) {
+    if (agent) {
+        const agentName = `${agent.firstName} ${agent.lastName}`;
+        document.getElementById('agentName')?.textContent = agentName || 'Agent';
+        document.getElementById('agentEmail')?.textContent = agent.email || '';
+        document.getElementById('agentPhone')?.textContent = agent.phone || '';
+        document.getElementById('agentId')?.textContent = agent.agentId || '';
+        
+        localStorage.setItem('userName', agentName);
+    }
+}
+
+// Update dashboard statistics
+function updateDashboardStats(data) {
+    if (data && data.stats) {
+        document.getElementById('totalRegistrations')?.textContent = data.stats.totalRegistrations || 0;
+        document.getElementById('monthlyRegistrations')?.textContent = data.stats.monthlyRegistrations || 0;
+        document.getElementById('totalEarnings')?.textContent = `₦${(data.stats.totalEarnings || 0).toLocaleString()}`;
+        document.getElementById('monthlyEarnings')?.textContent = `₦${(data.stats.monthlyEarnings || 0).toLocaleString()}`;
+        document.getElementById('balance')?.textContent = `₦${(data.stats.balance || 0).toLocaleString()}`;
+        document.getElementById('liquidityBalance')?.textContent = `₦${(data.stats.liquidityBalance || 0).toLocaleString()}`;
+    }
+}
+
+// Update customers list
+function updateCustomersList(customers) {
+    const listElement = document.getElementById('customersList');
+    if (!listElement) return;
+
+    if (!customers || customers.length === 0) {
+        listElement.innerHTML = '<p class="text-muted text-center py-4">No customers enrolled yet</p>';
+        return;
+    }
+
+    listElement.innerHTML = customers.map(customer => `
+        <div class="card mb-2">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${customer.firstName} ${customer.lastName}</h6>
+                        <small class="text-muted"><i class="bi bi-telephone me-1"></i>${customer.phone}</small>
+                    </div>
+                    <span class="badge bg-${customer.isActive ? 'success' : 'secondary'}">
+                        ${customer.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Initialize chart with real data
+function initializeChart(data) {
+    const ctx = document.getElementById('dashboardChart');
+    if (!ctx) return;
+
+    const chartData = data?.chartData || {};
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                {
+                    label: 'Registrations',
+                    data: chartData.registrations || [0, 0, 0, 0, 0, 0, 0], 
+                    backgroundColor: '#0A7A5E',
+                    borderRadius: 4,
+                },
+                {
+                    label: 'Earnings (₦)',
+                    data: chartData.earnings || [0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: '#fbbf24',
+                    borderRadius: 4,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+                y: { beginAtZero: true, grid: { display: false } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+// Loading state helpers
+function showLoading() {
+    const loader = document.getElementById('dashboardLoader');
+    if (loader) loader.classList.remove('d-none');
+}
+
+function hideLoading() {
+    const loader = document.getElementById('dashboardLoader');
+    if (loader) loader.classList.add('d-none');
+}
+
+function showError(message) {
+    alert(message); // You can replace with a better toast/notification
+}
 
 // ==========================================
 // FUNCTIONS
@@ -98,7 +215,10 @@ function simulateAction(message, modalId) {
 
 // C. Logout Function
 function logout() {
-    window.location.href = 'agenpp.html';
+    if (confirm('Are you sure you want to logout?')) {
+        FingerPayAPI.auth.logout();
+        window.location.href = 'log.html';
+    }
 }
 
 // ==========================================
