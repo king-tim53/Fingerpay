@@ -17,7 +17,7 @@ function showForm(form) {
 }
 
 function goBack() {
-  window.location.href = "index2.html"; // Adjust if necessary
+  window.location.href = "index.html"; // Adjust if necessary
 }
 
 function redirectToPow() {
