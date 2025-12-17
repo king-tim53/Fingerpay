@@ -503,6 +503,29 @@ function editTicket() {
     document.getElementById('incidentForm').classList.remove('d-none');
 }
 
+function copyTicket() {
+    const ticketText = document.getElementById('ticketText');
+    if (ticketText) {
+        const text = ticketText.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Ticket copied to clipboard!');
+        }).catch(() => {
+            alert('Failed to copy ticket');
+        });
+    }
+}
+
+function addTicketNote() {
+    const note = prompt('Add a note to this ticket:');
+    if (note) {
+        const ticketText = document.getElementById('ticketText');
+        if (ticketText) {
+            ticketText.innerText += `\n\nNOTE: ${note}`;
+            showToast('Note added to ticket');
+        }
+    }
+}
+
 // --- 5. MICRO TRAINING (SDG 4) ---
 function startMicroModule(type) {
     const modal = new bootstrap.Modal(document.getElementById('microTrainModal'));
@@ -531,6 +554,25 @@ function predictCashOutDemand() {
     
     const toastMsg = "AI Alert: " + prediction + " cash-out demand expected at your cluster today.";
     showToast ? showToast(toastMsg) : alert(toastMsg); 
+}
+
+function showCashOutPrediction() {
+    // Show AI prediction for cash-out demand
+    const regCount = parseInt(document.getElementById('totalRegValue')?.innerText || "0");
+    const monthlyEarnings = document.getElementById('monthlyEarnings')?.innerText || '₦0';
+    
+    const prediction = regCount > 30 ? "HIGH" : regCount > 15 ? "MODERATE" : "LOW";
+    const recommendation = prediction === "HIGH" 
+        ? "Stock up on cash! Predicted demand: 45+ withdrawals today." 
+        : prediction === "MODERATE"
+        ? "Normal demand expected. Current float should be sufficient."
+        : "Low demand expected. You may redirect some float.";
+    
+    alert(`FinAgent AI - Cash-Out Prediction\n\n` +
+          `Demand Level: ${prediction}\n` +
+          `Registered Customers: ${regCount}\n` +
+          `Monthly Earnings: ${monthlyEarnings}\n\n` +
+          `Recommendation: ${recommendation}`);
 }
 
 function recommendTraining() {

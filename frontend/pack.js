@@ -501,3 +501,119 @@ function processAiResponse(text) {
 
     addChatMessage(response, 'ai');
 }
+
+// ==========================================
+// 6. FLOATING CHAT WINDOW (FINCOACH BUBBLE)
+// ==========================================
+function toggleChatWindow() {
+    const chatWindow = document.getElementById('floatingChat');
+    if (chatWindow) {
+        chatWindow.classList.toggle('d-none');
+        // Auto-focus on input when opening
+        if (!chatWindow.classList.contains('d-none')) {
+            const input = document.getElementById('coachInput');
+            if (input) input.focus();
+        }
+    }
+}
+
+function sendCoachMessage() {
+    const input = document.getElementById('coachInput');
+    const messagesContainer = document.getElementById('coachMessages');
+    
+    if (!input || !messagesContainer) return;
+    
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'text-end mb-2';
+    userMsg.innerHTML = `<span class="badge bg-primary">${message}</span>`;
+    messagesContainer.appendChild(userMsg);
+
+    // Clear input
+    input.value = '';
+
+    // Show typing indicator
+    const typingMsg = document.createElement('div');
+    typingMsg.className = 'text-start mb-2 typing-indicator';
+    typingMsg.innerHTML = `<span class="badge bg-secondary">FinCoach is typing...</span>`;
+    messagesContainer.appendChild(typingMsg);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Simulate AI response
+    setTimeout(() => {
+        typingMsg.remove();
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'text-start mb-2';
+        aiMsg.innerHTML = `<span class="badge bg-success">Great question! Let me help you with that. Your spending looks good this week!</span>`;
+        messagesContainer.appendChild(aiMsg);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 1500);
+}
+
+// ==========================================
+// 7. UTILITY FUNCTIONS
+// ==========================================
+function copyFID() {
+    const fidElement = document.getElementById('customerFID');
+    if (!fidElement) return;
+    
+    const fid = fidElement.textContent;
+    navigator.clipboard.writeText(fid).then(() => {
+        alert('FID copied to clipboard: ' + fid);
+    }).catch(() => {
+        alert('Failed to copy FID');
+    });
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard: ' + text);
+    }).catch(() => {
+        alert('Failed to copy');
+    });
+}
+
+function generateReceipt(name, amount, date) {
+    alert(`Receipt Generated!\n\nPaid to: ${name}\nAmount: ₦${amount}\nDate: ${date}\n\nDownloading...`);
+    // In production, this would generate a PDF or open a receipt page
+}
+
+function simulateAiAction(msg) {
+    const modals = document.querySelectorAll('.modal.show');
+    modals.forEach(modal => {
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        if (modalInstance) modalInstance.hide();
+    });
+    
+    setTimeout(() => {
+        alert(msg);
+    }, 300);
+}
+
+function switchTab(tabName, event) {
+    if (event) event.preventDefault();
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.list-group-item-action').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Add active class to clicked tab
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    // Hide all tab contents
+    document.querySelectorAll('[id$="-tab"]').forEach(tab => {
+        tab.classList.add('d-none');
+    });
+    
+    // Show selected tab content
+    const selectedTab = document.getElementById(tabName + '-tab');
+    if (selectedTab) {
+        selectedTab.classList.remove('d-none');
+    }
+}
