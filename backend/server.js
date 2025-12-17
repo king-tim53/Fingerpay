@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Welcome to FingerPay API',
-    version: '1.0.0',
+    version: process.env.API_VERSION || '1.0.0',
     endpoints: {
       health: '/api/health',
       agents: '/api/agents',
