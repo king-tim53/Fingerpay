@@ -142,131 +142,161 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-// ==========================================
-// 3. FEATURE: STAFF MANAGER
-// ==========================================
-let staffList = [
-    { id: 101, name: 'Mr. John Doe', role: 'Cashier', salary: 50000, bank: 'Zenith', acct: '202***', source: 'Wallet', active: true },
-    { id: 102, name: 'Sarah Smith', role: 'Manager', salary: 120000, bank: 'GTBank', acct: '012***', source: 'Card', active: true }
-];
+/**
+ * ==========================================
+ * MODAL FUNCTIONALITY & CALCULATORS
+ * ==========================================
+ */
 
-function renderStaff() {
-    const tbody = document.getElementById('staffTableBody');
-    if(!tbody) return;
-    tbody.innerHTML = ''; 
-
-    staffList.forEach(staff => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td class="ps-4 fw-bold">${staff.name}</td>
-            <td><span class="badge bg-light text-dark border">${staff.role}</span></td>
-            <td class="fw-bold">N${staff.salary.toLocaleString()}</td>
-            <td class="small text-muted">${staff.bank}</td>
-            <td><span class="badge ${staff.source === 'Wallet' ? 'bg-success' : 'bg-primary'} bg-opacity-75">${staff.source}</span></td>
-            <td>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" ${staff.active ? 'checked' : ''} onchange="toggleStaffStatus(${staff.id})">
-                </div>
-            </td>
-            <td class="text-end pe-4">
-                <button class="btn btn-sm btn-outline-danger" onclick="confirmStopPay(${staff.id})"><i class="bi bi-pause-circle"></i></button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// Add New Staff
-const addStaffForm = document.getElementById('addStaffForm');
-if(addStaffForm) {
-    addStaffForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('staffName').value;
-        staffList.push({
-            id: Date.now(),
-            name: name,
-            role: 'New Hire',
-            salary: 0,
-            bank: 'N/A',
-            source: 'Wallet',
-            active: true
-        });
-        renderStaff();
-        window.showToast(`Staff ${name} added.`);
-        const modal = bootstrap.Modal.getInstance(document.getElementById('newStaffModal'));
-        if(modal) modal.hide();
-        e.target.reset();
-    });
-}
-
-window.toggleStaffStatus = function(id) {
-    const staff = staffList.find(s => s.id === id);
-    if(staff) {
-        staff.active = !staff.active;
-        window.showToast(staff.active ? "Auto-Pay Re-enabled" : "Auto-Pay Paused");
-    }
+// Global Currency Formatter
+const formatNaira = (amount) => {
+    return '₦' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 
-window.confirmStopPay = function(id) {
-    if(confirm("Are you sure you want to stop payment?")) {
-        window.toggleStaffStatus(id); 
-        renderStaff(); 
-    }
-};
+// 1. PROJECT CALCULATION (Fee: 5%)
+function calcProjectFees() {
+    const amount = parseFloat(document.getElementById('projTarget').value) || 0;
+    const fee = amount * 0.05;
+    const net = amount - fee;
 
+    document.getElementById('projFeeDisplay').innerText = formatNaira(fee);
+    document.getElementById('projNetDisplay').innerText = formatNaira(net);
+}
 
-// ==========================================
-// 4. FEATURE: POS & LOGISTICS
-// ==========================================
-window.handlePosOrder = function(event) {
-    event.preventDefault();
-    const modal = bootstrap.Modal.getInstance(document.getElementById('requestPosModal'));
-    if(modal) modal.hide();
+function handleNewProject(e) {
+    e.preventDefault();
+    const name = document.getElementById('projName').value;
+    const cat = document.getElementById('projCategory').value;
+    const net = document.getElementById('projNetDisplay').innerText;
     
-    // Trigger Delivery Animation Modal
-    const deliveryModal = new bootstrap.Modal(document.getElementById('deliveryModal'));
-    deliveryModal.show();
-    event.target.reset();
-};
+    // Simulate API Call
+    alert(`Project Created!\nTitle: ${name}\nCategory: ${cat}\nBudget: ${net}`);
+    bootstrap.Modal.getInstance(document.getElementById('newProjectModal')).hide();
+}
 
-window.refreshFleetStatus = function(btn) {
+// 2. FUNDS CALCULATION
+function calcFundTotal() {
+    const amt = parseFloat(document.getElementById('fundAmount').value) || 0;
+    // Assume 1.5% processing fee
+    const total = amt + (amt * 0.015);
+    document.getElementById('fundTotalDisplay').innerText = formatNaira(total);
+}
+
+function handleAddFunds(e) {
+    e.preventDefault();
+    const amt = document.getElementById('fundAmount').value;
+    alert(`Funds Added: N${amt}\nYour wallet has been credited.`);
+    bootstrap.Modal.getInstance(document.getElementById('addFundsModal')).hide();
+}
+
+// 3. TASK CALCULATION (Hours * Rate)
+function calcTaskCost() {
+    const hrs = parseFloat(document.getElementById('taskHours').value) || 0;
+    const rate = parseFloat(document.getElementById('taskRate').value) || 0;
+    const total = hrs * rate;
+    
+    document.getElementById('taskTotalCost').value = total.toLocaleString();
+}
+
+function handleAddTask(e) {
+    e.preventDefault();
+    const name = document.getElementById('taskNameInput').value;
+    const pri = document.getElementById('taskPriority').value;
+    const cost = document.getElementById('taskTotalCost').value;
+    
+    alert(`Task "${name}" added with ${pri} priority.\nEst Cost: N${cost}`);
+    bootstrap.Modal.getInstance(document.getElementById('addTaskModal')).hide();
+}
+
+// 4. STAFF SALARY & TAX CALCULATOR (Tax: 7.5%)
+function calcStaffPay() {
+    const gross = parseFloat(document.getElementById('staffSalary').value) || 0;
+    const tax = gross * 0.075;
+    const net = gross - tax;
+
+    document.getElementById('staffTax').innerText = formatNaira(tax);
+    document.getElementById('staffNet').innerText = formatNaira(net);
+}
+
+function handleNewStaff(e) {
+    e.preventDefault();
+    const name = document.getElementById('staffName').value;
+    const bank = document.getElementById('staffBank').value;
+    const acct = document.getElementById('staffAcct').value;
+    
+    if(acct.length !== 10) {
+        alert("Error: Account Number must be 10 digits.");
+        return;
+    }
+    
+    alert(`Staff Onboarded!\nName: ${name}\nBank: ${bank}`);
+    bootstrap.Modal.getInstance(document.getElementById('newStaffModal')).hide();
+}
+
+// 5. STOP PAY LOGIC
+function handleStopPayAction() {
+    const reason = document.getElementById('stopPayReason').value;
+    if(!reason) {
+        alert("Please select a reason for stopping payment.");
+        return;
+    }
+    alert(`Salary Paused.\nReason Code: ${reason.toUpperCase()}`);
+    bootstrap.Modal.getInstance(document.getElementById('stopPayModal')).hide();
+}
+
+// 6. POS ORDER CALCULATOR
+function calcPosTotal() {
+    const price = parseFloat(document.getElementById('posType').value) || 0;
+    const qty = parseFloat(document.getElementById('posQty').value) || 1;
+    const total = price * qty;
+    
+    document.getElementById('posTotalBtn').innerText = formatNaira(total);
+}
+
+function handlePosOrder(e) {
+    e.preventDefault();
+    const total = document.getElementById('posTotalBtn').innerText;
+    alert(`Order Confirmed!\nTotal Debited: ${total}\nDelivery: 2-3 Business Days.`);
+    bootstrap.Modal.getInstance(document.getElementById('requestPosModal')).hide();
+}
+
+// 7. COMPLAINT & TICKET GENERATOR
+function handleComplaint(e) {
+    e.preventDefault();
+    // Generate Random Ticket ID
+    const ticketID = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+    alert(`Complaint Submitted!\nTicket ID: ${ticketID}\nSupport will contact you shortly.`);
+    bootstrap.Modal.getInstance(document.getElementById('complaintModal')).hide();
+}
+
+// 8. GENERIC TERMINAL ACTIONS (Reboot, Rename)
+function simulateTerminalAction(msg, delay) {
+    // Show temporary loading state
+    const btn = event.target.closest('button');
     const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
     btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Updating...`;
+
     setTimeout(() => {
-        btn.disabled = false;
         btn.innerHTML = originalText;
-        window.showToast("Fleet telemetry updated.");
-    }, 1500);
-};
+        btn.disabled = false;
+        alert(msg);
+        
+        // If inside the settings modal, keep it open, otherwise close it if needed
+        // For this use case, we usually keep settings open
+    }, delay);
+}
 
-// ==========================================
-// 5. FEATURE: PROJECTS & FUNDS
-// ==========================================
-window.handleAddFunds = function(event) {
-    event.preventDefault();
-    const amount = document.getElementById('fundAmount').value;
-    
-    // Simulate updating the progress bar
-    const progressBar = document.getElementById('projectProgressBar');
-    if(progressBar) {
-        progressBar.style.width = "75%";
-        progressBar.innerText = "75% Funded";
-    }
-    
-    const modal = bootstrap.Modal.getInstance(document.getElementById('addFundsModal'));
-    if(modal) modal.hide();
-    window.showToast(`N${amount} added to project.`);
-    event.target.reset();
-};
+// 9. SUPPLIES
+function handleSupplies(e) {
+    e.preventDefault();
+    const item = document.getElementById('supplyItem');
+    const itemName = item.options[item.selectedIndex].text;
+    alert(`Request Sent for: ${itemName}.\nInventory Updated.`);
+    bootstrap.Modal.getInstance(document.getElementById('consumablesModal')).hide();
+}
 
-window.handleAddTask = function(event) {
-    event.preventDefault();
-    const modal = bootstrap.Modal.getInstance(document.getElementById('addTaskModal'));
-    if(modal) modal.hide();
-    window.showToast("New task added to breakdown.");
-    event.target.reset();
-};
 
 // ==========================================
 // 6. FEATURE: CREDIT AI (LOANS)
