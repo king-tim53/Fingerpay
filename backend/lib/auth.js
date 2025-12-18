@@ -62,5 +62,6 @@ const authenticate = (allowedRoles = []) => {
 module.exports = {
   generateToken,
   verifyToken,
-  authenticate
+  authenticate,
+  authenticateToken: authenticate([])
 };
