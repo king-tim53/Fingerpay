@@ -462,7 +462,7 @@ body {
 
 .primary-btn {
     background: var(--color-primary);
-    color: white;
+     color: #ffffff !important; /* Added !important to force white over Bootstrap */
     box-shadow: 0 4px 15px rgba(10, 122, 94, 0.4);
 }
 .primary-btn:hover { background: var(--color-secondary); transform: translateY(-2px); }
@@ -470,7 +470,7 @@ body {
 .biometric-btn {
     background: transparent;
     border: 1px solid var(--color-accent);
-    color: var(--color-accent);
+    color: #fff;
     display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .biometric-btn:hover {
