@@ -47,6 +47,54 @@
         }
         .back-link:hover { color: var(--merch-accent); transform: translateX(-3px); }
 
+        /* Language Dropdown (New) */
+        .lang-dropdown {
+            position: absolute;
+            top: 20px; right: 20px;
+            z-index: 100;
+        }
+        
+        .btn-lang {
+            color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        
+        .btn-lang:hover, .btn-lang:focus {
+            color: var(--merch-accent);
+            background: rgba(0,0,0,0.4);
+            border-color: var(--merch-accent);
+        }
+
+        .dropdown-menu-dark-custom {
+            background: rgba(11, 28, 51, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .dropdown-item {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(13, 202, 240, 0.1);
+            color: var(--merch-accent);
+        }
+
+        .dropdown-item.active {
+            background: var(--merch-primary);
+            color: white;
+        }
+
         /* Login Card */
         .login-card {
             background: var(--merch-glass);
@@ -97,6 +145,11 @@
             border-color: var(--merch-accent);
             color: #fff;
             box-shadow: 0 0 0 4px rgba(13, 202, 240, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
         }
 
         .input-group-text {
@@ -177,7 +230,25 @@
 </head>
 <body>
 
-    <a href="merchant.html" class="back-link"><i class="bi bi-arrow-left me-1"></i> Back to Business</a>
+    <!-- Back Link -->
+    <a href="merchant.html" class="back-link">
+        <i class="bi bi-arrow-left me-1"></i> 
+        <span data-i18n="backLink">Back to Business</span>
+    </a>
+
+    <!-- Language Switcher -->
+    <div class="lang-dropdown dropdown">
+        <button class="btn btn-lang dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-globe"></i> <span id="currentLang">English</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
+            <li><a class="dropdown-item active" onclick="setLanguage('en')">English</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('pcm')">Pidgin</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('yo')">Yorùbá</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('ig')">Igbo</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('ha')">Hausa</a></li>
+        </ul>
+    </div>
 
     <div class="container">
         <div class="row justify-content-center">
@@ -191,8 +262,8 @@
                             <i class="bi bi-fingerprint fingerprint-icon" id="scanIcon"></i>
                             <div class="scan-beam" id="scanBeam"></div>
                         </div>
-                        <h5 class="text-white fw-bold mb-1" id="scanStatus">Scanning...</h5>
-                        <p class="text-white-50 small">Verify Identity</p>
+                        <h5 class="text-white fw-bold mb-1" id="scanStatus" data-i18n="scanning">Scanning...</h5>
+                        <p class="text-white-50 small" data-i18n="verifyId">Verify Identity</p>
                     </div>
 
                     <!-- Header -->
@@ -200,15 +271,15 @@
                         <div class="bg-primary bg-opacity-25 text-white rounded-3 d-inline-flex p-3 mb-3 border border-primary border-opacity-50 shadow">
                             <i class="bi bi-shop-window fs-2"></i>
                         </div>
-                        <h3 class="fw-bold text-white font-heading">Merchant Portal</h3>
-                        <p class="text-white-50 small">Manage your business & sales</p>
+                        <h3 class="fw-bold text-white font-heading" data-i18n="title">Merchant Portal</h3>
+                        <p class="text-white-50 small" data-i18n="subtitle">Manage your business & sales</p>
                     </div>
 
                     <!-- Form -->
                     <form id="merchantLoginForm">
                         
                         <div class="mb-3">
-                            <label class="form-label">MERCHANT ID</label>
+                            <label class="form-label" data-i18n="labelId">MERCHANT ID</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person-workspace"></i></span>
                                 <input type="text" class="form-control merch-id-input" id="merchId" placeholder="MER-XXXXXX" maxlength="10" required autocomplete="off">
@@ -216,7 +287,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">PASSWORD</label>
+                            <label class="form-label" data-i18n="labelPass">PASSWORD</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-key"></i></span>
                                 <input type="password" class="form-control" id="merchPass" placeholder="••••••••" required>
@@ -227,28 +298,28 @@
                             <div class="d-flex justify-content-between mt-2">
                                 <div class="form-check">
                                     <input class="form-check-input bg-transparent border-secondary" type="checkbox" id="remember">
-                                    <label class="form-check-label text-white-50 small" for="remember">Remember me</label>
+                                    <label class="form-check-label text-white-50 small" for="remember" data-i18n="remember">Remember me</label>
                                 </div>
-                                <a href="#" class="text-cyan small text-decoration-none">Forgot Password?</a>
+                                <a href="#" class="text-cyan small text-decoration-none" data-i18n="forgot">Forgot Password?</a>
                             </div>
                         </div>
 
                         <div class="d-grid gap-3">
-                            <button type="submit" class="btn btn-primary rounded-pill">Sign In</button>
+                            <button type="submit" class="btn btn-primary rounded-pill" data-i18n="btnSign">Sign In</button>
                             
                             <div class="d-flex align-items-center justify-content-center gap-2 text-white-50 small my-1">
-                                <span style="height:1px; width:30px; background:rgba(255,255,255,0.2)"></span> OR <span style="height:1px; width:30px; background:rgba(255,255,255,0.2)"></span>
+                                <span style="height:1px; width:30px; background:rgba(255,255,255,0.2)"></span> <span data-i18n="or">OR</span> <span style="height:1px; width:30px; background:rgba(255,255,255,0.2)"></span>
                             </div>
 
                             <button type="button" class="btn btn-outline-cyan rounded-pill" onclick="startBiometricAuth()">
-                                <i class="bi bi-fingerprint me-2"></i> Biometric Login
+                                <i class="bi bi-fingerprint me-2"></i> <span data-i18n="btnBio">Biometric Login</span>
                             </button>
                         </div>
 
                     </form>
 
                     <div class="text-center mt-4 border-top border-white border-opacity-10 pt-3">
-                        <p class="text-white-50 small mb-0">New Business? <a href="merchant.html#registration-form" class="text-white fw-bold text-decoration-none">Create Account</a></p>
+                        <p class="text-white-50 small mb-0"><span data-i18n="newBiz">New Business?</span> <a href="merchant.html#registration-form" class="text-white fw-bold text-decoration-none" data-i18n="createAcc">Create Account</a></p>
                     </div>
 
                 </div>
@@ -273,6 +344,127 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        /* --- Language Dictionary --- */
+        const translations = {
+            en: {
+                langName: "English",
+                backLink: "Back to Business",
+                title: "Merchant Portal",
+                subtitle: "Manage your business & sales",
+                labelId: "MERCHANT ID",
+                labelPass: "PASSWORD",
+                remember: "Remember me",
+                forgot: "Forgot Password?",
+                btnSign: "Sign In",
+                or: "OR",
+                btnBio: "Biometric Login",
+                newBiz: "New Business?",
+                createAcc: "Create Account",
+                scanning: "Scanning...",
+                verifyId: "Verify Identity",
+                authText: "Authenticating..."
+            },
+            pcm: {
+                langName: "Pidgin",
+                backLink: "Go Back",
+                title: "Oga/Madam Portal",
+                subtitle: "Handle your business well well",
+                labelId: "MERCHANT ID",
+                labelPass: "PASSWORD",
+                remember: "Remember me",
+                forgot: "You forget password?",
+                btnSign: "Enter Inside",
+                or: "ABI",
+                btnBio: "Use Fingerprint",
+                newBiz: "New Business?",
+                createAcc: "Open Account",
+                scanning: "We dey check...",
+                verifyId: "Who be this?",
+                authText: "Wait make we check..."
+            },
+            yo: {
+                langName: "Yorùbá",
+                backLink: "Pada sẹhin",
+                title: "Ita Awọn Oniṣowo",
+                subtitle: "Ṣakoso iṣowo ati tita rẹ",
+                labelId: "ID ONIṢOWO",
+                labelPass: "ỌRỌIGBANIWỌLE",
+                remember: "Ranti mi",
+                forgot: "Gbagbe Ọrọigbaniwọle?",
+                btnSign: "Wọle",
+                or: "TABI",
+                btnBio: "Wọle pẹluika",
+                newBiz: "Iṣowo Tuntun?",
+                createAcc: "Ṣẹda Akọọlẹ",
+                scanning: "N ṣayẹwo...",
+                verifyId: "Daju idanimọ",
+                authText: "N jẹrisi..."
+            },
+            ig: {
+                langName: "Igbo",
+                backLink: "Laa azụ",
+                title: "Ọnụ Ụzọ Ndị Ahịa",
+                subtitle: "Jikwaa azụmahịa gị",
+                labelId: "ID ONYE AHIA",
+                labelPass: "OKWU NZUZO",
+                remember: "Cheta m",
+                forgot: "Ichefuru okwu nzuzo?",
+                btnSign: "Banye",
+                or: "MAỌBU",
+                btnBio: "Banye na akara mkpịsị aka",
+                newBiz: "Azụmahịa ọhụrụ?",
+                createAcc: "Mepụta Akaụntụ",
+                scanning: "Na-enyocha...",
+                verifyId: "Gosi onye ị bụ",
+                authText: "Na-enyocha..."
+            },
+            ha: {
+                langName: "Hausa",
+                backLink: "Koma baya",
+                title: "Kofar 'Yan Kasuwa",
+                subtitle: "Sarrafa kasuwancin ku",
+                labelId: "LAMBAR ID",
+                labelPass: "KALMAR SIRRI",
+                remember: "Tuna dani",
+                forgot: "Manta kalmar sirri?",
+                btnSign: "Shiga",
+                or: "KO",
+                btnBio: "Shiga da yatsa",
+                newBiz: "Sabuwar Kasuwanci?",
+                createAcc: "Bude Asusun",
+                scanning: "Ana dubawa...",
+                verifyId: "Tabbatar da asali",
+                authText: "Tabbatarwa..."
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Function to Change Language
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            const data = translations[lang];
+
+            // Update Dropdown Text
+            document.getElementById('currentLang').textContent = data.langName;
+
+            // Update Dropdown Active State
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(data.langName)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Update Text Elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (data[key]) {
+                    el.textContent = data[key];
+                }
+            });
+        }
+
         // 1. Auto-Format Merchant ID (MER-XXXXXX)
         const merchInput = document.getElementById('merchId');
         
@@ -314,13 +506,15 @@
             const icon = document.getElementById('scanIcon');
             const beam = document.getElementById('scanBeam');
             const status = document.getElementById('scanStatus');
+            const langData = translations[currentLanguage]; // Get current lang data
             
             scanner.style.display = 'flex';
+            status.textContent = langData.scanning;
             
             // Step 1: Scanning
             setTimeout(() => {
                 icon.style.color = 'var(--merch-accent)'; // Cyan
-                status.innerText = "Analyzing Print...";
+                // status text remains scanning or changes if you prefer
             }, 1000);
 
             // Step 2: Success
@@ -328,16 +522,13 @@
                 beam.style.display = 'none';
                 icon.className = 'bi bi-check-circle-fill fingerprint-icon';
                 icon.style.color = '#198754'; // Success Green
-                status.innerText = "Verified!";
+                status.innerText = "Verified!"; // Universal usually, or add to translation
                 status.className = "text-success fw-bold mb-1";
             }, 2500);
 
             // Step 3: Redirect
             setTimeout(() => {
-                // Since merchantDB.html is next, we placeholder alert
                 window.location.href = 'merchantDB.html'; 
-                
-                
             }, 3500);
         }
 
@@ -345,14 +536,16 @@
         document.getElementById('merchantLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const id = document.getElementById('merchId').value;
-            
+            const langData = translations[currentLanguage];
+
             if (id.length >= 7) {
                 const btn = this.querySelector('button[type="submit"]');
                 const originalText = btn.textContent;
-                btn.textContent = "Authenticating...";
+                btn.textContent = langData.authText;
                 btn.disabled = true;
 
                 setTimeout(() => {
+                    // Alert translated welcome? For now keep simple
                     alert("Welcome Back! Redirecting...");
                     // window.location.href = 'merchantDB.html';
                     btn.textContent = originalText;
