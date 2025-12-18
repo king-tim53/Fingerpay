@@ -18,6 +18,16 @@ function showSection(sectionName) {
         'section-fincoach'
     ];
 
+    // Section mapping
+    const sectionMap = {
+        'dashboard': 'section-dashboard',
+        'vault': 'section-vault',
+        'history': 'section-history',
+        'cards': 'section-cards',
+        'finger': 'section-finger',
+        'fincoach': 'section-fincoach'
+    };
+
     // Hide all sections
     allSections.forEach(id => {
         const el = document.getElementById(id);
@@ -28,18 +38,14 @@ function showSection(sectionName) {
     });
 
     // Determine target ID
-    let targetId = '';
-    if (sectionName === 'fincoach') targetId = 'section-fincoach';
-    else if (sectionName === 'vault') targetId = 'section-vault';
-    else if (sectionName === 'cards') targetId = 'section-cards';
-    else if (sectionName === 'finger') targetId = 'section-finger';
-    else targetId = 'section-dashboard'; // Default
+    const targetId = sectionMap[sectionName] || 'section-dashboard';
 
     // Show Target
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
         targetElement.classList.remove('d-none');
         setTimeout(() => targetElement.classList.add('fade-in'), 50);
+        setTimeout(() => targetElement.scrollIntoView({ behavior: 'smooth' }), 100);
     }
 
     // Update Sidebar Active State
