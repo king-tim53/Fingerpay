@@ -328,9 +328,9 @@
                 document.querySelector('.scan-beam').style.display = 'none';
             }, 2500);
 
-            // 3. Redirect
+            // 3. Redirect (FIXED HERE)
             setTimeout(() => {
-                window.location.href = 'agentDB.html'; 
+                window.location.href = 'agent-dashboard.html'; 
                 scanner.style.display = 'none';
             }, 3500);
         }
@@ -352,8 +352,13 @@
                 btn.disabled = true;
 
                 setTimeout(() => {
-                    alert(langData.successText);
-                    // window.location.href = 'agent-dashboard.html';
+                    // Alert commented out for smoother transition, or keep if you prefer
+                    // alert(langData.successText); 
+                    
+                    // (FIXED HERE)
+                    window.location.href = 'agent-dashboard.html';
+                    
+                    // Reset button (though we are redirecting, so this might not be seen)
                     btnTextSpan.textContent = originalText;
                     btn.disabled = false;
                 }, 1500);
@@ -361,6 +366,7 @@
                 showToast("Invalid Agent ID format or Password");
             }
         });
+
 
         // Toast Helper
         function showToast(msg) {
