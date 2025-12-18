@@ -1,19 +1,19 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    
-    // Check authentication
-    if (!FingerPayAPI.auth.isAuthenticated()) {
-        alert('Please login to access the dashboard');
-        window.location.href = 'log.html';
-        return;
-    }
 
-    // Verify user is an agent
-    const userType = localStorage.getItem('userType');
-    if (userType !== 'agent') {
-        alert('Access denied. Agent account required.');
-        window.location.href = 'log.html';
-        return;
-    }
+    // Check authentication - commented out for testing
+    // if (!FingerPayAPI.auth.isAuthenticated()) {
+    //     alert('Please login to access the dashboard');
+    //     window.location.href = 'log.html';
+    //     return;
+    // }
+
+    // Verify user is an agent - commented out for testing
+    // const userType = localStorage.getItem('userType');
+    // if (userType !== 'agent') {
+    //     alert('Access denied. Agent account required.');
+    //     window.location.href = 'log.html';
+    //     return;
+    // }
 
     // 1. Set Current Date
     const dateElement = document.getElementById('currentDate');
