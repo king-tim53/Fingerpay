@@ -518,28 +518,358 @@
     </div>
 
     <!-- ================= MODALS ================= -->
+<!-- ================== PROJECT MANAGEMENT MODALS ================== -->
 
-    <!-- New Project -->
-    <div class="modal fade" id="newProjectModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0"><div class="modal-header bg-dark-blue text-white"><h5 class="fw-bold">Create Project</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form onsubmit="handleFormSubmit(event, 'newProjectModal', 'Project Created!')"><input type="text" class="form-control mb-3" id="projName" placeholder="Project Title"><input type="number" class="form-control mb-3" id="projTarget" placeholder="Target Amount"><button class="btn btn-primary w-100 rounded-pill">Launch</button></form></div></div></div></div>
+<!-- 1. New Project Modal (Added: Category, Date, Auto-Fee Calculation) -->
+<div class="modal fade" id="newProjectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-dark-blue text-white">
+                <h5 class="fw-bold">Create Project</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form onsubmit="handleNewProject(event)">
+                    <div class="mb-3">
+                        <label class="small text-muted fw-bold">Project Details</label>
+                        <input type="text" class="form-control mb-2" id="projName" placeholder="Project Title" required>
+                        <select class="form-select" id="projCategory">
+                            <option value="Construction">Construction & Renovation</option>
+                            <option value="Tech">Tech Infrastructure</option>
+                            <option value="Marketing">Marketing Campaign</option>
+                            <option value="Logistics">Logistics Expansion</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="small text-muted fw-bold">Financials</label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text">₦</span>
+                            <input type="number" class="form-control" id="projTarget" placeholder="Target Amount" oninput="calcProjectFees()" required>
+                        </div>
+                        <!-- Dynamic Calculation Display -->
+                        <div class="d-flex justify-content-between small bg-light p-2 rounded">
+                            <span class="text-muted">Est. Platform Fee (5%):</span>
+                            <span class="fw-bold text-danger" id="projFeeDisplay">₦0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between small px-2 mt-1">
+                            <span class="text-muted">Net Budget:</span>
+                            <span class="fw-bold text-success" id="projNetDisplay">₦0.00</span>
+                        </div>
+                    </div>
 
-    <!-- Add Funds -->
-    <div class="modal fade" id="addFundsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0"><div class="modal-header bg-success text-white"><h5 class="fw-bold">Fund Project</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form onsubmit="handleAddFunds(event)"><input type="number" class="form-control mb-3" id="fundAmount" placeholder="0.00"><button class="btn btn-success w-100">Deposit</button></form></div></div></div></div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill">Launch Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- Add Task -->
-    <div class="modal fade" id="addTaskModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0"><div class="modal-header border-0"><h5 class="fw-bold">Add Task</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form onsubmit="handleAddTask(event)"><input type="text" class="form-control mb-3" id="taskNameInput" placeholder="Task Name"><div class="row g-2 mb-3"><div class="col-8"><input type="number" class="form-control" id="taskCostInput" placeholder="Cost"></div><div class="col-4"><select class="form-select" id="taskPriority"><option>Normal</option><option>High</option><option>Low</option></select></div></div><button class="btn btn-dark-blue w-100">Add</button></form></div></div></div></div>
+<!-- 2. Add Funds Modal (Added: Source, Fee Calculation) -->
+<div class="modal fade" id="addFundsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="fw-bold">Fund Project</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form onsubmit="handleAddFunds(event)">
+                    <label class="small fw-bold text-muted mb-1">Source</label>
+                    <select class="form-select mb-3 form-select-sm">
+                        <option>Main Wallet (₦1.2M)</option>
+                        <option>Linked Bank (Access)</option>
+                        <option>Crypto Deposit</option>
+                    </select>
 
-    <!-- Staff -->
-    <div class="modal fade" id="newStaffModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0"><div class="modal-header bg-primary text-white"><h5 class="fw-bold">Add Staff</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form id="addStaffForm"><input type="text" class="form-control mb-3" id="staffName" placeholder="Name"><input type="text" class="form-control mb-3" id="staffRole" placeholder="Role"><div class="row g-2 mb-3"><div class="col-6"><input type="number" class="form-control" id="staffSalary" placeholder="Salary"></div><div class="col-6"><select class="form-select" id="staffBank"><option>Zenith</option></select></div></div><div class="col-12 mb-3"><input type="text" class="form-control" id="staffAcct" placeholder="Account No"></div><div class="col-12 mb-3"><div class="btn-group w-100"><input type="radio" class="btn-check" name="paySource" id="srcWallet" checked><label class="btn btn-outline-secondary" for="srcWallet">Wallet</label><input type="radio" class="btn-check" name="paySource" id="srcCard"><label class="btn btn-outline-secondary" for="srcCard">Card</label></div></div><button class="btn btn-primary w-100">Add</button></form></div></div></div></div>
+                    <label class="small fw-bold text-muted mb-1">Amount</label>
+                    <input type="number" class="form-control mb-2" id="fundAmount" placeholder="0.00" oninput="calcFundTotal()">
+                    
+                    <p class="small text-end text-muted mb-3">
+                        Total Charge: <span class="fw-bold text-dark" id="fundTotalDisplay">₦0.00</span>
+                    </p>
+                    <button class="btn btn-success w-100">Deposit Funds</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- Stop Pay -->
-    <div class="modal fade" id="stopPayModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 text-center p-4"><h5 class="fw-bold">Pause Salary?</h5><div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-light" data-bs-dismiss="modal">No</button><button class="btn btn-warning" onclick="handleStopPayAction()">Yes</button></div></div></div></div>
+<!-- 3. Add Task Modal (Added: Hourly Calc, Staff Assignment) -->
+<div class="modal fade" id="addTaskModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <h5 class="fw-bold">Add Task</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form onsubmit="handleAddTask(event)">
+                    <input type="text" class="form-control mb-3" id="taskNameInput" placeholder="Task Name (e.g. Site Survey)" required>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="small text-muted">Est. Hours</label>
+                            <input type="number" class="form-control" id="taskHours" placeholder="Hrs" oninput="calcTaskCost()">
+                        </div>
+                        <div class="col-6">
+                            <label class="small text-muted">Rate/Hr</label>
+                            <input type="number" class="form-control" id="taskRate" value="5000" oninput="calcTaskCost()">
+                        </div>
+                    </div>
 
-    <!-- Logistics Modals -->
-    <div class="modal fade" id="requestPosModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0"><div class="modal-header bg-dark-blue text-white"><h5 class="fw-bold">Order Terminal</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form onsubmit="handlePosOrder(event)"><input type="number" class="form-control mb-3" value="1"><button class="btn btn-primary w-100">Confirm Order</button></form></div></div></div></div>
-    <div class="modal fade" id="complaintModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0"><div class="modal-header bg-danger text-white"><h5 class="fw-bold">Report Issue</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form onsubmit="handleFormSubmit(event, 'complaintModal', 'Complaint Logged!')"><textarea class="form-control mb-3" placeholder="Describe issue..."></textarea><button class="btn btn-danger w-100">Submit</button></form></div></div></div></div>
-    <div class="modal fade" id="consumablesModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0"><div class="modal-header border-0"><h5 class="fw-bold">Supplies</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form onsubmit="handleFormSubmit(event, 'consumablesModal', 'Request Sent!')"><select class="form-select mb-3"><option>Paper Rolls</option></select><button class="btn btn-dark w-100">Request</button></form></div></div></div></div>
-    <div class="modal fade" id="terminalSettingsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0"><div class="modal-header border-0"><h5 class="fw-bold">Manage Terminal</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><button class="btn btn-light w-100 mb-2 border" onclick="simulateTerminalAction('Rebooting...', 2000)">Reboot</button><div class="input-group mt-3"><input type="text" class="form-control" id="terminalRenameInput"><button class="btn btn-dark" onclick="simulateTerminalAction('Renamed!', 500)">Save</button></div></div></div></div></div>
-    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-light fw-bold">Total Cost: ₦</span>
+                        <input type="text" class="form-control bg-white fw-bold" id="taskTotalCost" value="0" readonly>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-12">
+                            <select class="form-select" id="taskPriority">
+                                <option value="Normal">Priority: Normal</option>
+                                <option value="High" class="text-danger fw-bold">Priority: High</option>
+                                <option value="Low">Priority: Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-dark-blue w-100" style="background-color: #0d6efd; color: white;">Add Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== HR & STAFF MODALS ================== -->
+
+<!-- 4. New Staff Modal (Added: Expanded Banks, Tax/Net Pay Calculator) -->
+<div class="modal fade" id="newStaffModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="fw-bold">Add Staff</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addStaffForm" onsubmit="handleNewStaff(event)">
+                    <input type="text" class="form-control mb-3" id="staffName" placeholder="Full Name" required>
+                    <input type="text" class="form-control mb-3" id="staffRole" placeholder="Job Title / Role" required>
+                    
+                    <!-- Calculator Section -->
+                    <div class="bg-light p-3 rounded mb-3 border">
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="small fw-bold">Gross Salary</label>
+                                <input type="number" class="form-control" id="staffSalary" placeholder="Amount" oninput="calcStaffPay()">
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-bold">Bank</label>
+                                <select class="form-select" id="staffBank">
+                                    <option>Zenith Bank</option>
+                                    <option>GTBank</option>
+                                    <option>Access Bank</option>
+                                    <option>UBA</option>
+                                    <option>First Bank</option>
+                                    <option>Kuda MFB</option>
+                                    <option>OPay</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>Tax (7.5%): <span id="staffTax">₦0.00</span></span>
+                            <span>Net Pay: <strong class="text-success" id="staffNet">₦0.00</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control" id="staffAcct" placeholder="10-Digit Account Number" maxlength="10">
+                    </div>
+                    
+                    <div class="col-12 mb-3">
+                        <div class="btn-group w-100">
+                            <input type="radio" class="btn-check" name="paySource" id="srcWallet" checked>
+                            <label class="btn btn-outline-secondary" for="srcWallet">Wallet</label>
+                            
+                            <input type="radio" class="btn-check" name="paySource" id="srcCard">
+                            <label class="btn btn-outline-secondary" for="srcCard">Card</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100">Onboard Staff</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 5. Stop Pay Modal (Added: Reason Selector) -->
+<div class="modal fade" id="stopPayModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 text-center p-4">
+            <h5 class="fw-bold text-danger">Pause Salary?</h5>
+            <p class="small text-muted">Select a reason to proceed.</p>
+            
+            <select class="form-select form-select-sm mb-3" id="stopPayReason">
+                <option value="">Select Reason...</option>
+                <option value="disciplinary">Disciplinary Action</option>
+                <option value="leave">Unpaid Leave</option>
+                <option value="resignation">Resignation Processing</option>
+                <option value="other">Other Investigation</option>
+            </select>
+
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-warning" onclick="handleStopPayAction()">Confirm Pause</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== LOGISTICS & TERMINAL MODALS ================== -->
+
+<!-- 6. Request POS Modal (Added: Type Selection & Price Calculation) -->
+<div class="modal fade" id="requestPosModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-dark-blue text-white" style="background-color: #1f2937;">
+                <h5 class="fw-bold">Order Terminal</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form onsubmit="handlePosOrder(event)">
+                    <div class="mb-3">
+                        <label class="small fw-bold">Terminal Type</label>
+                        <select class="form-select" id="posType" onchange="calcPosTotal()">
+                            <option value="25000">Android Smart POS (₦25,000)</option>
+                            <option value="15000">Analog Button POS (₦15,000)</option>
+                            <option value="45000">Mini-Android (₦45,000)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="small fw-bold">Quantity</label>
+                        <input type="number" class="form-control" id="posQty" value="1" min="1" oninput="calcPosTotal()">
+                    </div>
+
+                    <div class="mb-3">
+                         <label class="small fw-bold">Delivery Address</label>
+                         <textarea class="form-control" rows="2" placeholder="Enter branch address..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary w-100 d-flex justify-content-between align-items-center">
+                        <span>Checkout</span>
+                        <span class="fw-bold" id="posTotalBtn">₦25,000</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 7. Complaint Modal (Added: Ticket ID generation, Category) -->
+<div class="modal fade" id="complaintModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="fw-bold">Report Issue</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form onsubmit="handleComplaint(event)">
+                    <div class="row g-2 mb-3">
+                        <div class="col-8">
+                            <select class="form-select">
+                                <option>Network Failure</option>
+                                <option>Printer Jam</option>
+                                <option>Software Crash</option>
+                                <option>Battery Issue</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select text-danger fw-bold">
+                                <option>High</option>
+                                <option>Med</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <textarea class="form-control mb-3" placeholder="Describe issue details..." rows="3" required></textarea>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="uploadLogs" checked>
+                        <label class="form-check-label small" for="uploadLogs">Attach Terminal Logs</label>
+                    </div>
+                    <button class="btn btn-danger w-100">Submit Ticket</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 8. Consumables Modal (Added: Stock check & Price) -->
+<div class="modal fade" id="consumablesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <h5 class="fw-bold">Supplies</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleSupplies(event)">
+                    <select class="form-select mb-2" id="supplyItem">
+                        <option value="500">Thermal Rolls (Pack of 10)</option>
+                        <option value="1200">Terminal Battery</option>
+                        <option value="2000">Charging Dock</option>
+                    </select>
+                    
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <input type="number" class="form-control" value="1" placeholder="Qty">
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success">In Stock</span>
+                    </div>
+
+                    <button class="btn btn-dark w-100">Request Supply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 9. Terminal Settings (Added: Diagnostic Tools) -->
+<div class="modal fade" id="terminalSettingsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <h5 class="fw-bold">Manage Terminal</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-secondary p-2 mb-3 small d-flex justify-content-between">
+                    <span>Merchant ID:</span> <strong class="font-monospace">MER-88291</strong>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <button class="btn btn-light w-100 border h-100 py-3" onclick="simulateTerminalAction('Rebooting System...', 3000)">
+                            <i class="bi bi-power text-danger d-block fs-4 mb-1"></i> Reboot
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-light w-100 border h-100 py-3" onclick="simulateTerminalAction('Testing Network...', 2000)">
+                            <i class="bi bi-wifi text-primary d-block fs-4 mb-1"></i> Net Test
+                        </button>
+                    </div>
+                </div>
+
+                <label class="small fw-bold">Device Alias</label>
+                <div class="input-group mt-1">
+                    <input type="text" class="form-control" id="terminalRenameInput" value="Counter-1 POS">
+                    <button class="btn btn-dark" onclick="simulateTerminalAction('Alias Updated!', 500)">Save</button>
+                </div>
+                
+                <hr>
+                <button class="btn btn-outline-danger w-100 btn-sm" onclick="confirm('Factory Reset? This cannot be undone.')">Factory Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+
  <!-- 1. BIOMETRIC LOAN MODAL (Original) -->
 <div class="modal fade" id="loanModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
