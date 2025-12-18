@@ -12,11 +12,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
- <link href="agentpp.css" rel="stylesheet">
+    <!-- External CSS -->
+    <link href="agentpp.css" rel="stylesheet">
 </head>
 <body>
 
-    <a href="index.html" class="back-link"><i class="bi bi-arrow-left me-1"></i> Back to Home</a>
+    <!-- Back Link -->
+    <a href="index.html" class="back-link">
+        <i class="bi bi-arrow-left me-1"></i> 
+        <span data-i18n="backHome">Back to Home</span>
+    </a>
+
+    <!-- Language Switcher -->
+    <div class="lang-dropdown dropdown">
+        <button class="btn btn-lang dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-translate"></i> <span id="currentLang">English</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
+            <li><a class="dropdown-item active" onclick="setLanguage('en')">English</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('pcm')">Pidgin</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('yo')">Yorùbá</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('ig')">Igbo</a></li>
+            <li><a class="dropdown-item" onclick="setLanguage('ha')">Hausa</a></li>
+        </ul>
+    </div>
 
     <div class="container px-4">
         <div class="row justify-content-center">
@@ -30,22 +49,22 @@
                             <i class="bi bi-fingerprint fingerprint-icon"></i>
                             <div class="scan-beam"></div>
                         </div>
-                        <h5 class="text-white fw-bold mb-1">Scanning...</h5>
-                        <p class="text-white-50 small">Place authorized finger on sensor</p>
+                        <h5 class="text-white fw-bold mb-1" id="scanTitle" data-i18n="scanning">Scanning...</h5>
+                        <p class="text-white-50 small" data-i18n="scanDesc">Place authorized finger on sensor</p>
                     </div>
 
                     <div class="text-center mb-4">
                         <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3 mb-3 border border-success border-opacity-25">
                             <i class="bi bi-shop-window fs-2"></i>
                         </div>
-                        <h3 class="fw-bold text-white">Agent Portal</h3>
-                        <p class="text-white-50 small">Access your terminal dashboard</p>
+                        <h3 class="fw-bold text-white" data-i18n="portalTitle">Agent Portal</h3>
+                        <p class="text-white-50 small" data-i18n="portalDesc">Access your terminal dashboard</p>
                     </div>
 
                     <form id="agentLoginForm">
                         <!-- Agent ID -->
                         <div class="mb-3">
-                            <label class="form-label text-white-50 small fw-bold">AGENT ID</label>
+                            <label class="form-label text-white-50 small fw-bold" data-i18n="labelID">AGENT ID</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                                 <input type="text" class="form-control agent-id-input" id="agentId" placeholder="AG-XXXXXXX" maxlength="10" required>
@@ -54,7 +73,7 @@
 
                         <!-- Password -->
                         <div class="mb-3">
-                            <label class="form-label text-white-50 small fw-bold">PASSWORD</label>
+                            <label class="form-label text-white-50 small fw-bold" data-i18n="labelPass">PASSWORD</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-lock"></i></span>
                                 <input type="password" class="form-control" id="agentPass" placeholder="••••••••" required>
@@ -67,27 +86,30 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="rememberMe">
-                                <label class="form-check-label text-white-50 small" for="rememberMe">Keep me logged in</label>
+                                <label class="form-check-label text-white-50 small" for="rememberMe" data-i18n="keepLogged">Keep me logged in</label>
                             </div>
-                            <a href="#" class="text-warning small text-decoration-none">Forgot ID?</a>
+                            <a href="#" class="text-warning small text-decoration-none" data-i18n="forgotID">Forgot ID?</a>
                         </div>
 
                         <button type="submit" class="btn btn-agent w-100 rounded-pill mb-3">
-                            Sign In to Terminal
+                            <span data-i18n="btnSignIn">Sign In to Terminal</span>
                         </button>
 
                         <div class="position-relative text-center mb-3">
                             <hr class="border-secondary opacity-50">
-                            <span class="position-absolute top-50 start-50 translate-middle px-2 text-white-50 bg-dark small" style="z-index: 1;">OR</span>
+                            <span class="position-absolute top-50 start-50 translate-middle px-2 text-white-50 bg-dark small" style="z-index: 1;" data-i18n="or">OR</span>
                         </div>
 
                         <button type="button" class="btn btn-bio w-100 rounded-pill d-flex align-items-center justify-content-center gap-2" onclick="startBiometricAuth()">
-                            <i class="bi bi-fingerprint"></i> Biometric Login
+                            <i class="bi bi-fingerprint"></i> <span data-i18n="btnBio">Biometric Login</span>
                         </button>
                     </form>
 
                     <div class="text-center mt-4">
-                        <p class="text-white-50 small mb-0">Not a registered agent? <a href="agent.html" class="text-success fw-bold text-decoration-none">Apply Here</a></p>
+                        <p class="text-white-50 small mb-0">
+                            <span data-i18n="notAgent">Not a registered agent?</span> 
+                            <a href="agent.html" class="text-success fw-bold text-decoration-none" data-i18n="applyHere">Apply Here</a>
+                        </p>
                     </div>
 
                 </div>
@@ -112,6 +134,138 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        /* --- Translations --- */
+        const translations = {
+            en: {
+                langName: "English",
+                backHome: "Back to Home",
+                scanning: "Scanning...",
+                scanDesc: "Place authorized finger on sensor",
+                portalTitle: "Agent Portal",
+                portalDesc: "Access your terminal dashboard",
+                labelID: "AGENT ID",
+                labelPass: "PASSWORD",
+                keepLogged: "Keep me logged in",
+                forgotID: "Forgot ID?",
+                btnSignIn: "Sign In to Terminal",
+                or: "OR",
+                btnBio: "Biometric Login",
+                notAgent: "Not a registered agent?",
+                applyHere: "Apply Here",
+                verifyText: "Verifying...",
+                successText: "Login Successful! Redirecting...",
+                authTitle: "Authorized"
+            },
+            pcm: {
+                langName: "Pidgin",
+                backHome: "Go Back House",
+                scanning: "We dey check...",
+                scanDesc: "Put correct finger for sensor",
+                portalTitle: "Oga Agent Portal",
+                portalDesc: "Enter inside your dashboard",
+                labelID: "AGENT ID",
+                labelPass: "PASSWORD",
+                keepLogged: "Make I still dey inside",
+                forgotID: "You forget ID?",
+                btnSignIn: "Enter Terminal",
+                or: "ABI",
+                btnBio: "Use Fingerprint",
+                notAgent: "You never register?",
+                applyHere: "Apply for here",
+                verifyText: "Wait make we check...",
+                successText: "You don enter! We dey carry you go...",
+                authTitle: "You get access"
+            },
+            yo: {
+                langName: "Yorùbá",
+                backHome: "Pada si Ile",
+                scanning: "N ṣayẹwo...",
+                scanDesc: "Gbe ika ti a fun ni aṣẹ sori ẹrọ",
+                portalTitle: "Ita Awọn Aṣoju",
+                portalDesc: "Wọle si dashboard rẹ",
+                labelID: "ID AṢOJU",
+                labelPass: "ỌRỌIGBANIWỌLE",
+                keepLogged: "Jẹ ki n wa ni wọle",
+                forgotID: "Gbagbe ID?",
+                btnSignIn: "Wọle si Terminal",
+                or: "TABI",
+                btnBio: "Wọle pẹlu ika",
+                notAgent: "Ṣe o ko ti forukọsilẹ?",
+                applyHere: "Waye Nibi",
+                verifyText: "N jẹrisi...",
+                successText: "Wiwọle Aṣeyọri! N ṣe atunitọsọna...",
+                authTitle: "Aṣẹ Ti fọwọsi"
+            },
+            ig: {
+                langName: "Igbo",
+                backHome: "Laa n'ulo",
+                scanning: "Na-enyocha...",
+                scanDesc: "Tinye mkpịsị aka na ihe mmetụta",
+                portalTitle: "Ọnụ Ụzọ Ndị Onye Nnọchiteanya",
+                portalDesc: "Banye na dashboard gị",
+                labelID: "ID ONYE NNỌCHITEANYA",
+                labelPass: "OKWU NZUZO",
+                keepLogged: "Debere m n'ime",
+                forgotID: "Ichefuru ID?",
+                btnSignIn: "Banye na Terminal",
+                or: "MAỌBU",
+                btnBio: "Banye na akara mkpịsị aka",
+                notAgent: "Ị debanyeghị aha?",
+                applyHere: "Tinye akwụkwọ ebe a",
+                verifyText: "Na-enyocha...",
+                successText: "Nbanye gara nke ọma!...",
+                authTitle: "Enyere ikike"
+            },
+            ha: {
+                langName: "Hausa",
+                backHome: "Koma gida",
+                scanning: "Ana dubawa...",
+                scanDesc: "Saka yatsa akan na'urar",
+                portalTitle: "Kofar Wakilai",
+                portalDesc: "Shiga cikin dashboard ɗin ku",
+                labelID: "LAMBAR WAKILI",
+                labelPass: "KALMAR SIRRI",
+                keepLogged: "A bar ni a ciki",
+                forgotID: "Manta ID?",
+                btnSignIn: "Shiga Terminal",
+                or: "KO",
+                btnBio: "Shiga da yatsa",
+                notAgent: "Ba wakili mai rijista ba?",
+                applyHere: "Aiwatar Anan",
+                verifyText: "Tabbatarwa...",
+                successText: "Shiga Yayi Nasara!...",
+                authTitle: "An Amince"
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Function to Change Language
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            const data = translations[lang];
+
+            // Update Dropdown Button Text
+            document.getElementById('currentLang').textContent = data.langName;
+
+            // Update Active State in Dropdown
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(data.langName)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Update Text Content on Page
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (data[key]) {
+                    el.textContent = data[key];
+                }
+            });
+        }
+
+
         // 1. Auto-Format Agent ID (AG-XXXXXXX)
         const agentInput = document.getElementById('agentId');
         
@@ -155,9 +309,11 @@
             const scanner = document.getElementById('bioScanner');
             const icon = scanner.querySelector('.fingerprint-icon');
             const title = scanner.querySelector('h5');
+            const langData = translations[currentLanguage];
             
             // Show Scanner
             scanner.style.display = 'flex';
+            title.textContent = langData.scanning;
             
             // 1. Scanning State
             setTimeout(() => {
@@ -168,15 +324,13 @@
             setTimeout(() => {
                 icon.className = 'bi bi-check-circle-fill fingerprint-icon';
                 icon.style.color = 'var(--agent-primary)'; // Green on success
-                title.textContent = 'Authorized';
+                title.textContent = langData.authTitle;
                 document.querySelector('.scan-beam').style.display = 'none';
             }, 2500);
 
             // 3. Redirect
             setTimeout(() => {
-                // Since agent-dashboard.html doesn't exist yet, we alert or redirect to home
-                window.location.href = 'agent-dashboard.html'; 
-                
+                window.location.href = 'agentDB.html'; 
                 scanner.style.display = 'none';
             }, 3500);
         }
@@ -186,19 +340,21 @@
             e.preventDefault();
             const id = document.getElementById('agentId').value;
             const pass = document.getElementById('agentPass').value;
+            const langData = translations[currentLanguage];
 
             // Simple validation simulation
             if (id.length === 10 && pass.length > 3) {
                 const btn = this.querySelector('button[type="submit"]');
-                const originalText = btn.textContent;
+                const btnTextSpan = btn.querySelector('span'); // Target the span inside button
+                const originalText = btnTextSpan.textContent;
                 
-                btn.textContent = "Verifying...";
+                btnTextSpan.textContent = langData.verifyText;
                 btn.disabled = true;
 
                 setTimeout(() => {
-                    alert("Login Successful! Redirecting...");
+                    alert(langData.successText);
                     // window.location.href = 'agent-dashboard.html';
-                    btn.textContent = originalText;
+                    btnTextSpan.textContent = originalText;
                     btn.disabled = false;
                 }, 1500);
             } else {
