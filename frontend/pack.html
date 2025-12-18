@@ -137,7 +137,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#section-fincoach" onclick="showSection('fincoach')">
+                <a class="nav-link" onclick="showSection('fincoach'); return false;">
                     <i class="bi bi-robot me-2 text-warning"></i> <span>FinCoach AI</span>
                 </a>
             </li>
@@ -1009,7 +1009,7 @@
 <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content text-center border-0"><div class="modal-body p-4"><div class="mb-3 text-success"><i class="fas fa-check-circle fa-4x"></i></div><h5 class="fw-bold">Success!</h5><p id="successModalBody" class="text-muted small">Request processed.</p><button class="btn btn-success w-100 rounded-pill mt-3" data-bs-dismiss="modal">Done</button></div></div></div></div>
 
 <!-- 11. LOGOUT MODAL -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0"><div class="modal-body text-center p-4"><i class="fas fa-sign-out-alt fa-3x text-danger mb-3"></i><h5>Log Out?</h5><p class="text-muted small">Are you sure?</p><div class="d-flex justify-content-center gap-2 mt-4"><button class="btn btn-light" data-bs-dismiss="modal">No</button><button class="btn btn-danger" id="confirmLogoutBtn" >Yes</button></div></div></div></div></div>
+                <button class="btn btn-danger" id="confirmLogoutBtn" onclick="window.location.href='log.html'">Yes</button>
 <!-- 1. Salary Sorter Confirmation -->
 <div class="modal fade" id="salaryModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

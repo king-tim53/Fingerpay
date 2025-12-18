@@ -8,12 +8,13 @@
 
 // --- 1. GLOBAL NAVIGATION LOGIC (Must be at the top) ---
 function showSection(sectionName) {
-    // List of all possible sections
+    // List of all possible sections (corrected IDs)
     const allSections = [
-        'dashboard-section', 
-        'wallet-section', 
-        'credit-section', 
-        'finagent-section', 
+        'section-dashboard',
+        'section-vault',
+        'section-history',
+        'section-cards',
+        'section-finger',
         'section-fincoach'
     ];
 
@@ -29,10 +30,10 @@ function showSection(sectionName) {
     // Determine target ID
     let targetId = '';
     if (sectionName === 'fincoach') targetId = 'section-fincoach';
-    else if (sectionName === 'credit') targetId = 'credit-section';
-    else if (sectionName === 'finagent') targetId = 'finagent-section';
-    else if (sectionName === 'wallet') targetId = 'wallet-section';
-    else targetId = 'dashboard-section'; // Default
+    else if (sectionName === 'vault') targetId = 'section-vault';
+    else if (sectionName === 'cards') targetId = 'section-cards';
+    else if (sectionName === 'finger') targetId = 'section-finger';
+    else targetId = 'section-dashboard'; // Default
 
     // Show Target
     const targetElement = document.getElementById(targetId);
@@ -43,9 +44,9 @@ function showSection(sectionName) {
 
     // Update Sidebar Active State
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active', 'bg-gradient-primary', 'shadow');
+        link.classList.remove('active-link');
         if(link.getAttribute('onclick') && link.getAttribute('onclick').includes(sectionName)) {
-            link.classList.add('active', 'bg-gradient-primary', 'shadow');
+            link.classList.add('active-link');
         }
     });
 }
@@ -95,7 +96,7 @@ async function loadCustomerDashboard() {
         if (error.status === 401) {
             alert('Session expired. Please login again.');
             FingerPayAPI.auth.logout();
-            window.location.href = 'log.html';
+            window.location.href = 'index.html';
         } else {
             alert('Failed to load dashboard data: ' + (error.message || 'Please try again'));
         }
@@ -124,7 +125,7 @@ function updateTransactionHistory(transactions) {
 window.logout = () => {
     if (confirm('Are you sure you want to logout?')) {
         FingerPayAPI.auth.logout();
-        window.location.href = 'log.html';
+        window.location.href = 'index.html';
     }
 };
 
@@ -149,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Check authentication
     if (!FingerPayAPI.auth.isAuthenticated()) {
-        window.location.href = 'log.html';
+        window.location.href = 'index.html';
         return;
     }
 
@@ -158,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (userType !== 'customer') {
         alert('Access denied. This dashboard is for customers only.');
         FingerPayAPI.auth.logout();
-        window.location.href = 'log.html';
+        window.location.href = 'index.html';
         return;
     }
 
@@ -272,7 +273,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoutBtn = document.getElementById('confirmLogoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            window.location.href = "log.html";
+            window.location.href = "index.html";
         });
     }
 });
