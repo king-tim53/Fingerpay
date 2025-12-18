@@ -171,21 +171,16 @@ function showError(message) {
 // ==========================================
 
 // A. Section Switcher
-function showSection(sectionId, linkElement, event) {
-    // Prevent default link behavior
-    if (event) {
-        event.preventDefault();
-    }
-    
+function showSection(sectionId, linkElement) {
     // Hide all sections
     document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('d-none'));
-    
+
     // Show target section
     document.getElementById(`${sectionId}-section`).classList.remove('d-none');
-    
+
     // Update Active Link State
     document.querySelectorAll('#sidebarNav .nav-link').forEach(nav => nav.classList.remove('active'));
-    linkElement.classList.add('active');
+    if (linkElement) linkElement.classList.add('active');
 
     // Update Header Title
     const titles = {
@@ -193,10 +188,11 @@ function showSection(sectionId, linkElement, event) {
         'registration': 'Registration & Targets',
         'merchant': 'Merchant Management',
         'earnings': 'Wallet & Commissions',
+        'finagent': 'FinAgent AI',
         'reports': 'Issue Tracker & Reports',
-        'settings': 'Account Settings' // Add this line
+        'settings': 'Account Settings'
     };
-    document.getElementById('pageTitle').textContent = titles[sectionId];
+    document.getElementById('pageTitle').textContent = titles[sectionId] || sectionId;
 
     // Close sidebar on mobile after click
     if(window.innerWidth < 992) {
