@@ -428,4 +428,75 @@ window.renderLiteracy = function() {
     });
     container.innerHTML = html;
 };
+/**
+ * ==========================================
+ * TRANSACTION RECEIPT LOGIC
+ * Features: Dynamic Data, Color Toggle (Credit/Debit), Mock Share/Download
+ * ==========================================
+ */
+
+function viewReceipt(amount, type, ref, party, desc, date, isCredit) {
+    // 1. Populate Text Data into Modal Elements
+    document.getElementById('receiptAmount').innerText = amount;
+    document.getElementById('receiptType').innerText = type;
+    document.getElementById('receiptRef').innerText = ref;
+    document.getElementById('receiptParty').innerText = party;
+    document.getElementById('receiptDesc').innerText = desc;
+    document.getElementById('receiptDate').innerText = date;
+
+    // 2. Dynamic Styling (Green for Credit, Red for Debit)
+    // Select the colorful header div inside the modal
+    const headerElement = document.querySelector('#receiptModal .modal-body > div'); 
+    const iconElement = headerElement.querySelector('i'); // Select the icon
+
+    if (headerElement) {
+        // Reset classes
+        headerElement.classList.remove('bg-success', 'bg-danger');
+        
+        if (isCredit) {
+            // Credit (Inflow) Styling
+            headerElement.classList.add('bg-success');
+            if(iconElement) iconElement.className = "bi bi-check-circle-fill";
+        } else {
+            // Debit (Outflow) Styling
+            headerElement.classList.add('bg-danger');
+            if(iconElement) iconElement.className = "bi bi-arrow-up-right-circle-fill";
+        }
+    }
+
+    // 3. Show the Modal using Bootstrap 5 API
+    const modalElement = document.getElementById('receiptModal');
+    const modalInstance = new bootstrap.Modal(modalElement);
+    modalInstance.show();
+}
+
+// Helper: Simulate Sharing
+function shareReceipt() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'FingerPay Receipt',
+            text: `Transaction Receipt: ${document.getElementById('receiptRef').innerText}`,
+            url: window.location.href
+        }).catch(console.error);
+    } else {
+        // Fallback for desktop/unsupported browsers
+        alert("Share options opened (Simulated)");
+    }
+}
+
+// Helper: Simulate PDF Download
+function downloadReceipt() {
+    const btn = event.target.closest('button'); // Ensure we target the button even if icon is clicked
+    const originalText = btn.innerHTML;
+    
+    // Loading State
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert("Receipt PDF saved to your device!");
+    }, 1500);
+}
 
