@@ -65,11 +65,15 @@ async function loadDashboardData() {
 function updateProfileUI(agent) {
     if (agent) {
         const agentName = `${agent.firstName} ${agent.lastName}`;
-        document.getElementById('agentName')?.textContent = agentName || 'Agent';
-        document.getElementById('agentEmail')?.textContent = agent.email || '';
-        document.getElementById('agentPhone')?.textContent = agent.phone || '';
-        document.getElementById('agentId')?.textContent = agent.agentId || '';
-        
+        const agentNameEl = document.getElementById('agentName');
+        if (agentNameEl) agentNameEl.textContent = agentName || 'Agent';
+        const agentEmailEl = document.getElementById('agentEmail');
+        if (agentEmailEl) agentEmailEl.textContent = agent.email || '';
+        const agentPhoneEl = document.getElementById('agentPhone');
+        if (agentPhoneEl) agentPhoneEl.textContent = agent.phone || '';
+        const agentIdEl = document.getElementById('agentId');
+        if (agentIdEl) agentIdEl.textContent = agent.agentId || '';
+
         localStorage.setItem('userName', agentName);
     }
 }
