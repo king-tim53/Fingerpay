@@ -1,3 +1,7 @@
+// Async handler wrapper
+const asyncHandler = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
+
 // Global error handler middleware
 
 const errorHandler = (err, req, res, next) => {
@@ -62,6 +66,7 @@ const notFound = (req, res, next) => {
 };
 
 module.exports = {
+  asyncHandler,
   errorHandler,
   notFound
 };
