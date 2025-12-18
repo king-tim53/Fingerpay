@@ -324,15 +324,51 @@ window.handleFloatRequest = function(event) {
     }
 };
 
-// Polyglot Communicator
-let currentPolyMode = 'loan'; 
+/**
+ * ==========================================
+ * FINAGENT AI: UNIFIED POLYGLOT COMMUNICATOR
+ * Combines Mode Switching + Rich Translation Dictionary
+ * ==========================================
+ */
 
+// 1. STATE MANAGEMENT
+let currentPolyMode = 'loan'; // Default mode
+
+// 2. RICH CONTENT DATABASE (Education Scripts)
+// These keys match the <select id="eduTopic"> values in your HTML
+const polyglotData = {
+    'interest': {
+        'English': "Our interest rate is 4.5% monthly. For example, if you borrow N10,000 today, you will pay back N10,450 in 30 days. There are no hidden fees.",
+        'Pidgin': "Oga/Madam, the interest na just 4.5% every month. If you collect N10k now, you go pay back N10,450 when month end. No mago-mago anywhere.",
+        'Hausa': "Kudin ruwa shine 4.5% kowane wata. Idan ka ranta N10,000, zaka biya N10,450 nan da kwana 30. Babu wani caji na boye.",
+        'Yoruba': "Ele wa jẹ 4.5% loṣooṣu. Ti o ba ya N10,000, iwọ yoo san N10,450 pada ni ọgbọn ọjọ. Ko si owo pamọ.",
+        'Igbo': "Mmasị anyị bụ 4.5% kwa ọnwa. Ọ bụrụ na ị gbaziri N10,000, ị ga-akwụghachi N10,450 n'ime ụbọchị 30. Enweghị ụgwọ zoro ezo."
+    },
+    'fraud': {
+        'English': "Security Warning: Do not share your 4-digit PIN with anyone, not even bank staff. Cover the keypad when typing. If you see a camera, report it.",
+        'Pidgin': "Abeg shine your eyes! No give anybody your PIN number, even if na bank manager ask you. Cover your hand well when you dey press PIN.",
+        'Hausa': "Gargadi: Kada ka baiwa kowa lambar sirrinka (PIN). Kare maballin lokacin dannawa. Idan kaga kyamara, ka kai kara.",
+        'Yoruba': "Ikilọ Abo: Maṣe pin PIN rẹ pẹlu ẹnikẹni, paapaa oṣiṣẹ banki. Bo bọtini nigba titẹ. Ti o ba ri kamẹra, jabọ rẹ.",
+        'Igbo': "Ịdọ aka ná ntị nchekwa: ekekọrịtala onye ọ bụla PIN gị. Kpuchie ahụigodo mgbe ị na-ede ihe."
+    },
+    'app': {
+        'English': "Download the FingerPay App to track transactions instantly. You can print receipts via Bluetooth and check your daily profit without waiting for SMS.",
+        'Pidgin': "Download the FingerPay App make you dey see transaction sharp-sharp. You fit print receipt connect Bluetooth printer. No need to wait for SMS.",
+        'Hausa': "Sauke manhajar FingerPay don ganin hada-hadar kudi nan take. Zaka iya fitar da rasit ta Bluetooth kuma ka duba ribar ka.",
+        'Yoruba': "Ṣe igbasilẹ ohun elo FingerPay lati tọpa awọn iṣowo lẹsẹkẹsẹ. O le tẹ awọn iwe-ẹri nipasẹ Bluetooth ki o ṣayẹwo ere ojoojumọ rẹ.",
+        'Igbo': "Budata ngwa FingerPay ka ị soro azụmahịa ozugbo. Ị nwere ike ibipụta akwụkwọ nnata site na Bluetooth."
+    }
+};
+
+// 3. UI SWITCHING LOGIC
 window.switchPolyMode = function(mode, btn) {
     currentPolyMode = mode;
     
+    // Update Tabs
     document.querySelectorAll('#polyglotTabs .nav-link').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if(btn) btn.classList.add('active');
 
+    // Toggle Input Sections
     if(mode === 'loan') {
         document.getElementById('loanInputs').classList.remove('d-none');
         document.getElementById('eduInputs').classList.add('d-none');
@@ -342,51 +378,89 @@ window.switchPolyMode = function(mode, btn) {
     }
 };
 
+// 4. GENERATION LOGIC (The Brain)
 window.runPolyglotGen = function() {
+    // Elements
     const output = document.getElementById('polyOutput');
     const status = document.getElementById('polyStatus');
     const lang = document.getElementById('targetLanguage').value;
     
+    // UI Update (Thinking State)
     status.textContent = `Translating to ${lang}...`;
     status.className = "badge bg-warning text-dark";
-    output.textContent = "";
+    output.innerHTML = `<span class="spinner-border spinner-border-sm text-warning"></span> AI Processing...`;
 
     let text = "";
-    const merchId = document.getElementById('loanMerchId')?.value || "M-101";
 
+    // === LOGIC BRANCH: LOAN MODE ===
     if (currentPolyMode === 'loan') {
+        const merchId = document.getElementById('loanMerchId')?.value || "MER-001";
         const score = document.getElementById('loanScore')?.value || "700";
-        if(lang === 'English') text = `LOAN AGREEMENT for ${merchId}\nScore: ${score}\nDisburse N50,000. Interest: 4.5%`;
-        else if(lang === 'Pidgin') text = `AGREEMENT for ${merchId}\nOga/Madam, your score na ${score}. We go give you N50k.`;
-        else text = `[${lang}] Loan Contract generated for ${merchId}. Terms apply.`;
-    } else {
-        // Education Mode
-        text = `[${lang}] Script: "Always cover your PIN when entering it." (SDG 4 Education)`;
+        
+        // Dynamic Loan Templates
+        if(lang === 'English') {
+            text = `LOAN OFFER FOR ${merchId}:\nCongratulations! With a credit score of ${score}, you qualify for N50,000.\nInterest: 4.5% Monthly.\nRepay: N52,250.`;
+        } else if(lang === 'Pidgin') {
+            text = `SPECIAL OFFER FOR ${merchId}:\nOga/Madam, your score na ${score}, e bam! We fit give you N50k sharp-sharp.\nJust 4.5% interest. You go pay N52,250 back.`;
+        } else if(lang === 'Hausa') {
+            text = `TAYIN BASHI GA ${merchId}:\nBarka! Da maki ${score}, ka cancanci N50,000.\nKudin ruwa: 4.5% a wata.\nJimlar biya: N52,250.`;
+        } else if(lang === 'Yoruba') {
+            text = `ÌFUNNI AWIN FUN ${merchId}:\nOriire! Pẹlu aami ${score}, o ye fun N50,000.\nEle: 4.5% Oṣooṣu.\nSan pada: N52,250.`;
+        } else if(lang === 'Igbo') {
+            text = `ONYINYE EGO BIRI ${merchId}:\nEkele! Site na akara ${score}, ị tozuru oke maka N50,000.\nMmasị: 4.5% Kwa ọnwa.\nKwụọ ụgwọ: N52,250.`;
+        }
+    } 
+    // === LOGIC BRANCH: EDUCATION MODE ===
+    else {
+        const topic = document.getElementById('eduTopic').value; // interest, fraud, app
+        
+        // Fetch from Database
+        if(polyglotData[topic] && polyglotData[topic][lang]) {
+            text = polyglotData[topic][lang];
+        } else {
+            text = `[${lang}] Script for ${topic} is being generated. Please explain terms manually.`;
+        }
     }
 
-    // Typewriter
-    let i = 0;
-    const interval = setInterval(() => {
-        if (i < text.length) {
-            output.textContent += text.charAt(i);
-            i++;
-        } else {
-            clearInterval(interval);
-            status.textContent = "Generated";
-            status.className = "badge bg-success";
-        }
-    }, 20);
+    // === TYPEWRITER EFFECT ===
+    setTimeout(() => {
+        output.textContent = ""; // Clear loader
+        let i = 0;
+        const speed = 20; // ms per character
+
+        const interval = setInterval(() => {
+            if (i < text.length) {
+                // Handle newlines for better formatting
+                const char = text.charAt(i);
+                if(char === '\n') {
+                     output.appendChild(document.createElement('br'));
+                } else {
+                     output.append(char);
+                }
+                i++;
+            } else {
+                clearInterval(interval);
+                status.textContent = "Generated Successfully";
+                status.className = "badge bg-success";
+            }
+        }, speed);
+    }, 500); // Slight delay for realism
 };
 
+// 5. HELPER FUNCTIONS
 window.sendToMerchant = function() {
-    showToast("Script sent to Merchant App!");
+    // In a real app, this would trigger an API call to the merchant's device
+    showToast("Message sent to Merchant App Terminal!");
 };
 
 window.copyPolyText = function() {
-    const text = document.getElementById('polyOutput').textContent;
-    navigator.clipboard.writeText(text).then(() => showToast("Copied!"));
+    const text = document.getElementById('polyOutput').innerText; // Use innerText to get newlines
+    navigator.clipboard.writeText(text).then(() => {
+        showToast("Script copied to clipboard!");
+    }).catch(err => {
+        showToast("Failed to copy", true);
+    });
 };
-
 // Route Optimizer
 window.optimizeRoute = function() {
     const list = document.getElementById('routeList');
