@@ -229,21 +229,139 @@
                 </section>
 
                 <!-- ================= SECTION 4: STAFF MANAGER ================= -->
-                <section id="staff-section" class="content-section d-none fade-in">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div><h5 class="fw-bold mb-0">Staff & Payroll</h5><small class="text-muted">Automated Salary Payments</small></div>
-                        <button class="btn btn-primary rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#newStaffModal"><i class="bi bi-person-plus-fill me-2"></i> Add Staff</button>
-                    </div>
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-white border-0 py-3"><h6 class="fw-bold mb-0">Payroll List</h6></div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0 table-hover">
-                                <thead class="bg-light"><tr><th class="ps-4">Name</th><th>Role</th><th>Salary</th><th>Auto-Pay</th><th class="text-end pe-4">Action</th></tr></thead>
-                                <tbody id="staffTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+               <section id="staff-section" class="content-section d-none fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h5 class="fw-bold mb-0">Staff & Payroll</h5>
+      <small class="text-muted">Automated Salary Payments</small>
+    </div>
+    <button class="btn btn-primary rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#newStaffModal">
+      <i class="bi bi-person-plus-fill me-2"></i> Add Staff
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 py-3">
+      <h6 class="fw-bold mb-0">Payroll List (Dec 2025)</h6>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0 table-hover">
+        <thead class="bg-light">
+          <tr>
+            <th class="ps-4">Name</th>
+            <th>Role</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th class="text-end pe-4">Action</th>
+          </tr>
+        </thead>
+        <tbody id="staffTableBody">
+          
+          <!-- Staff 1: Manager -->
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 35px; height: 35px;">CO</div>
+                <div>
+                  <span class="fw-bold text-dark">Chidinma Okeke</span><br>
+                  <small class="text-muted" style="font-size: 0.75rem;">GTBank ••• 4421</small>
+                </div>
+              </div>
+            </td>
+            <td>Store Manager</td>
+            <td class="font-monospace fw-bold">₦180,000</td>
+            <td><span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Active</span></td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-light border me-1"><i class="bi bi-pencil-fill text-muted"></i></button>
+              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#stopPayModal"><i class="bi bi-pause-fill"></i></button>
+            </td>
+          </tr>
+
+          <!-- Staff 2: Senior Cashier -->
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 35px; height: 35px;">YI</div>
+                <div>
+                  <span class="fw-bold text-dark">Yusuf Ibrahim</span><br>
+                  <small class="text-muted" style="font-size: 0.75rem;">Access ••• 9920</small>
+                </div>
+              </div>
+            </td>
+            <td>Senior Cashier</td>
+            <td class="font-monospace fw-bold">₦85,000</td>
+            <td><span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Active</span></td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-light border me-1"><i class="bi bi-pencil-fill text-muted"></i></button>
+              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#stopPayModal"><i class="bi bi-pause-fill"></i></button>
+            </td>
+          </tr>
+
+          <!-- Staff 3: Stock Keeper -->
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 35px; height: 35px;">TA</div>
+                <div>
+                  <span class="fw-bold text-dark">Tolu Adebayo</span><br>
+                  <small class="text-muted" style="font-size: 0.75rem;">Opay ••• 1102</small>
+                </div>
+              </div>
+            </td>
+            <td>Stock Keeper</td>
+            <td class="font-monospace fw-bold">₦65,000</td>
+            <td><span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Active</span></td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-light border me-1"><i class="bi bi-pencil-fill text-muted"></i></button>
+              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#stopPayModal"><i class="bi bi-pause-fill"></i></button>
+            </td>
+          </tr>
+
+          <!-- Staff 4: Security -->
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 35px; height: 35px;">EN</div>
+                <div>
+                  <span class="fw-bold text-dark">Emeka Nwosu</span><br>
+                  <small class="text-muted" style="font-size: 0.75rem;">Zenith ••• 3319</small>
+                </div>
+              </div>
+            </td>
+            <td>Security Officer</td>
+            <td class="font-monospace fw-bold">₦60,000</td>
+            <td><span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3">Pending</span></td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-light border me-1"><i class="bi bi-pencil-fill text-muted"></i></button>
+              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#stopPayModal"><i class="bi bi-pause-fill"></i></button>
+            </td>
+          </tr>
+
+          <!-- Staff 5: Cleaner -->
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 35px; height: 35px;">AB</div>
+                <div>
+                  <span class="fw-bold text-dark">Aisha Bello</span><br>
+                  <small class="text-muted" style="font-size: 0.75rem;">Kuda ••• 5501</small>
+                </div>
+              </div>
+            </td>
+            <td>Cleaner / Utility</td>
+            <td class="font-monospace fw-bold">₦50,000</td>
+            <td><span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Active</span></td>
+            <td class="text-end pe-4">
+              <button class="btn btn-sm btn-light border me-1"><i class="bi bi-pencil-fill text-muted"></i></button>
+              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#stopPayModal"><i class="bi bi-pause-fill"></i></button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
                 <section id="sales-section" class="content-section d-none"><div class="text-center p-5 text-muted"><h3>Transaction History Module</h3></div></section>
 
