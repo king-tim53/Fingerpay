@@ -114,7 +114,7 @@ function generateOTP() {
   }, 1000);
 }
 
-// 4. Biometric Login Simulation
+// 4. Biometric Login Simulation (Updated with Fix)
 function fingerprintLogin() {
   const overlay = document.getElementById("fingerprint-scan");
   const icon = overlay.querySelector(".scan-icon");
@@ -134,6 +134,22 @@ function fingerprintLogin() {
 
   setTimeout(() => {
     overlay.style.display = "none";
+
+    // --- FIX: SAVE SESSION DATA ---
+    // We must save this so pack.html knows you are logged in
+    
+    // 1. Save Fake Token
+    if (typeof FingerPayAPI !== 'undefined' && FingerPayAPI.auth) {
+        FingerPayAPI.auth.setToken("bio-simulation-token-12345", true);
+    } else {
+        localStorage.setItem("authToken", "bio-simulation-token-12345");
+    }
+
+    // 2. Save User Details (Defaulting to customer/pack.html access)
+    localStorage.setItem("userType", "customer");
+    localStorage.setItem("userId", "bio-user-01"); 
+    localStorage.setItem("userName", "Biometric User");
+
     showSuccess("Login Successful", "Identity verified via fingerprint.");
   }, 3500);
 }
