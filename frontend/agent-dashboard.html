@@ -376,148 +376,113 @@
               </button>
             </div>
 
-            <!-- ROW 1: POLYGLOT COMMAND CENTER (Loan + Edu Scripts) -->
-            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-              <div
-                class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center"
-              >
-                <h6 class="fw-bold mb-0 text-primary">
-                  <i class="bi bi-translate me-2"></i>Polyglot Communicator &
-                  Loan Officer
-                </h6>
-                <!-- Tabs to switch modes -->
-                <ul class="nav nav-pills card-header-pills" id="polyglotTabs">
-                  <li class="nav-item">
-                    <a
-                      class="nav-link active btn-sm"
-                      href="#"
-                      onclick="switchPolyMode('loan', this)"
-                      >Loan Contract</a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a
-                      class="nav-link btn-sm"
-                      href="#"
-                      onclick="switchPolyMode('edu', this)"
-                      >Edu Script (SDG 4)</a
-                    >
-                  </li>
-                </ul>
-              </div>
-              <div class="card-body p-4">
-                <div class="row g-4">
-                  <!-- Input Area -->
-                  <div class="col-lg-4 border-end">
-                    <!-- Mode: Loan Inputs -->
-                    <div id="loanInputs">
-                      <label class="small fw-bold text-muted mb-2"
-                        >Merchant Details</label
-                      >
-                      <div class="input-group mb-3">
-                        <span class="input-group-text"
-                          ><i class="bi bi-shop"></i
-                        ></span>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="loanMerchId"
-                          placeholder="Merchant ID"
-                        />
-                      </div>
-                      <div class="input-group mb-3">
-                        <span class="input-group-text"
-                          ><i class="bi bi-graph-up"></i
-                        ></span>
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="loanScore"
-                          placeholder="Credit Score (e.g. 785)"
-                        />
-                      </div>
-                    </div>
+           <!-- ================= POLYGLOT COMMUNICATOR SECTION ================= -->
+<div class="card border-0 shadow-sm mb-4 overflow-hidden">
+  <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+    <!-- Title -->
+    <h6 class="fw-bold mb-0 text-primary">
+      <i class="bi bi-translate me-2"></i>Polyglot & Loan Officer
+    </h6>
+    
+    <!-- Mode Switching Tabs -->
+    <ul class="nav nav-pills card-header-pills" id="polyglotTabs">
+      <li class="nav-item">
+        <a class="nav-link active btn-sm cursor-pointer" onclick="switchPolyMode('loan', this)">
+          Loan Contract
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn-sm cursor-pointer" onclick="switchPolyMode('edu', this)">
+          Edu Script (SDG 4)
+        </a>
+      </li>
+    </ul>
+  </div>
 
-                    <!-- Mode: Education Inputs (Hidden by default) -->
-                    <div id="eduInputs" class="d-none">
-                      <label class="small fw-bold text-muted mb-2"
-                        >Select Training Topic</label
-                      >
-                      <select class="form-select mb-3" id="eduTopic">
-                        <option value="interest">
-                          Explaining Interest Rates
-                        </option>
-                        <option value="fraud">Avoiding POS Fraud</option>
-                        <option value="app">How to use the App</option>
-                      </select>
-                    </div>
+  <div class="card-body p-4">
+    <div class="row g-4">
+      
+      <!-- LEFT COLUMN: CONTROLS & INPUTS -->
+      <div class="col-lg-4 border-end">
+        
+        <!-- MODE A: LOAN INPUTS (Visible by default) -->
+        <div id="loanInputs" class="fade-in">
+          <label class="small fw-bold text-muted mb-2">Merchant Details</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light"><i class="bi bi-shop"></i></span>
+            <input type="text" class="form-control" id="loanMerchId" placeholder="Merchant ID (e.g. MER-202)" value="MER-202">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light"><i class="bi bi-graph-up-arrow"></i></span>
+            <input type="number" class="form-control" id="loanScore" placeholder="Credit Score (e.g. 750)" value="750">
+          </div>
+        </div>
 
-                    <label class="small fw-bold text-muted mb-2"
-                      >Target Language</label
-                    >
-                    <select class="form-select mb-4" id="targetLanguage">
-                      <option value="English" selected>🇬🇧 English</option>
-                      <option value="Pidgin">🇳🇬 Pidgin English</option>
-                      <option value="Hausa">🐎 Hausa</option>
-                      <option value="Yoruba">🦁 Yoruba</option>
-                      <option value="Igbo">🦅 Igbo</option>
-                    </select>
+        <!-- MODE B: EDUCATION INPUTS (Hidden by default) -->
+        <div id="eduInputs" class="d-none fade-in">
+          <label class="small fw-bold text-muted mb-2">Select Training Topic</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light"><i class="bi bi-mortarboard-fill"></i></span>
+            <!-- Values here match the JS Object keys exactly -->
+            <select class="form-select" id="eduTopic">
+              <option value="interest">Explaining Interest Rates</option>
+              <option value="fraud">Avoiding POS Fraud</option>
+              <option value="app">How to use Mobile App</option>
+            </select>
+          </div>
+        </div>
 
-                    <button
-                      class="btn btn-primary w-100 fw-bold py-2 shadow-sm"
-                      onclick="runPolyglotGen()"
-                    >
-                      <i class="bi bi-lightning-charge me-2"></i> Generate
-                      Output
-                    </button>
-                  </div>
+        <!-- SHARED: LANGUAGE SELECTOR -->
+        <label class="small fw-bold text-muted mb-2">Target Language</label>
+        <div class="input-group mb-4">
+          <span class="input-group-text bg-light"><i class="bi bi-mic-fill"></i></span>
+          <select class="form-select" id="targetLanguage">
+            <option value="English" selected>🇬🇧 English</option>
+            <option value="Pidgin">🇳🇬 Pidgin English</option>
+            <option value="Hausa">🐎 Hausa</option>
+            <option value="Yoruba">🦁 Yoruba</option>
+            <option value="Igbo">🦅 Igbo</option>
+          </select>
+        </div>
 
-                  <!-- Output Area -->
-                  <div class="col-lg-8">
-                    <div
-                      class="d-flex justify-content-between align-items-center mb-2"
-                    >
-                      <span
-                        class="badge bg-light text-dark border"
-                        id="polyStatus"
-                        >Ready to Generate...</span
-                      >
-                      <div class="d-flex gap-2">
-                        <button
-                          class="btn btn-sm btn-outline-dark"
-                          onclick="copyPolyText()"
-                          title="Copy Text"
-                        >
-                          <i class="bi bi-clipboard"></i> Copy
-                        </button>
-                        <button
-                          class="btn btn-sm btn-outline-primary"
-                          onclick="sendToMerchant()"
-                          title="Send to Merchant App"
-                        >
-                          <i class="bi bi-send"></i> Send
-                        </button>
-                      </div>
-                    </div>
-                    <div
-                      class="bg-dark text-white p-3 rounded-3 font-monospace small position-relative"
-                      style="
-                        min-height: 250px;
-                        max-height: 300px;
-                        overflow-y: auto;
-                      "
-                    >
-                      <div id="polyOutput" class="text-white-50 typing-cursor">
-                        // AI Agent Awaiting Command...<br />
-                        // Select a mode (Loan or Education).<br />
-                        // Choose a language (Hausa, Igbo, Yoruba, etc).
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <!-- GENERATE BUTTON -->
+        <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm hover-scale" onclick="runPolyglotGen()">
+          <i class="bi bi-lightning-charge-fill me-2"></i> Generate Output
+        </button>
+      </div>
 
+      <!-- RIGHT COLUMN: AI TERMINAL OUTPUT -->
+      <div class="col-lg-8">
+        <!-- Status Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="badge bg-light text-dark border" id="polyStatus">
+            <i class="bi bi-circle-fill text-success me-1" style="font-size: 0.6rem;"></i> System Ready
+          </span>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-dark" onclick="copyPolyText()" title="Copy to Clipboard">
+              <i class="bi bi-clipboard"></i> Copy
+            </button>
+            <button class="btn btn-sm btn-outline-success" onclick="sendToMerchant()" title="Send to Merchant Terminal">
+              <i class="bi bi-send-fill"></i> Send
+            </button>
+          </div>
+        </div>
+
+        <!-- Terminal Screen -->
+        <div class="bg-dark text-white p-3 rounded-3 font-monospace small position-relative shadow-inner" style="min-height: 250px; max-height: 300px; overflow-y: auto; border: 1px solid #374151;">
+          <!-- Default Placeholder Text -->
+          <div id="polyOutput" class="text-white-50">
+            <span class="text-success">user@finagent:~$</span> Awaiting command...<br>
+            // 1. Select Mode (Loan or Education).<br>
+            // 2. Choose Language.<br>
+            // 3. Click Generate.<br>
+            <span class="typing-cursor">_</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
             <div class="row g-4 mb-4">
               <!-- ROW 2, COL 1: SMART ROUTE + CASH PREDICTION -->
               <div class="col-lg-6">
