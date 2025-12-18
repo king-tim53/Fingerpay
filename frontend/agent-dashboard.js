@@ -288,7 +288,7 @@ window.confirmKillSwitch = function() {
 window.finalizeKillSwitch = function() {
     bootstrap.Modal.getInstance(document.getElementById('killSwitchModal')).hide();
     alert("ACCOUNT FROZEN. Redirecting to secure login...");
-    window.location.href = "agent-login.html";
+    window.location.href = "agenpp.html";
 };
 
 
