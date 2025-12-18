@@ -491,17 +491,17 @@ function generateIncidentReport() {
 
 }
 // --- CUSTOMER AI (FinCoach) ---
-function processAiResponse(text) {
+function processCoachResponse(text) {
     // This looks at the ACTUAL balance showing on your pack.html page
     const currentBalance = document.getElementById('balanceValue').innerText;
     let response = "";
 
     if (text.toLowerCase().includes("balance") || text.toLowerCase().includes("money")) {
         response = `Your current balance is ${currentBalance}. FinCoach says: You are doing well, but try not to spend more than N2,000 today to stay on track!`;
-    } 
+    }
     else if (text.toLowerCase().includes("vault") || text.toLowerCase().includes("save")) {
         response = "Your Ring-Finger Vault is currently locked. Would you like me to calculate how much more you need to reach your 1-Million Naira goal?";
-    } 
+    }
     else {
         response = "I'm your FinCoach! You can ask me about your spending, how the Vault works, or to explain banking 'jargon' in Pidgin.";
     }
@@ -513,23 +513,23 @@ function processAiResponse(text) {
 // 6. FLOATING CHAT WINDOW (FINCOACH BUBBLE)
 // ==========================================
 function toggleChatWindow() {
-    const chatWindow = document.getElementById('floatingChat');
+    const chatWindow = document.getElementById('aiCoachWindow');
     if (chatWindow) {
         chatWindow.classList.toggle('d-none');
         // Auto-focus on input when opening
         if (!chatWindow.classList.contains('d-none')) {
-            const input = document.getElementById('coachInput');
+            const input = document.getElementById('chatInput');
             if (input) input.focus();
         }
     }
 }
 
 function sendCoachMessage() {
-    const input = document.getElementById('coachInput');
-    const messagesContainer = document.getElementById('coachMessages');
-    
+    const input = document.getElementById('chatInput');
+    const messagesContainer = document.getElementById('chatHistory');
+
     if (!input || !messagesContainer) return;
-    
+
     const message = input.value.trim();
     if (!message) return;
 
@@ -552,11 +552,7 @@ function sendCoachMessage() {
     // Simulate AI response
     setTimeout(() => {
         typingMsg.remove();
-        const aiMsg = document.createElement('div');
-        aiMsg.className = 'text-start mb-2';
-        aiMsg.innerHTML = `<span class="badge bg-success">Great question! Let me help you with that. Your spending looks good this week!</span>`;
-        messagesContainer.appendChild(aiMsg);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        processCoachResponse(message.toLowerCase());
     }, 1500);
 }
 
