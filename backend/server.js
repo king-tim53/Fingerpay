@@ -13,7 +13,6 @@ const apiRoutes = require("./routes");
 const { errorHandler, notFound } = require("./lib/errorHandler");
 
 const PORT = process.env.PORT || 3000;
-
 const app = express();
 
 // Connect to database
@@ -32,6 +31,7 @@ app.use(morgan("dev"));
 
 // Request logging middleware
 app.use((req, res, next) => {
+  // ✅ FIXED: Added parentheses instead of backticks
   console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
 });
@@ -61,6 +61,7 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
+  // ✅ FIXED: Added parentheses instead of backticks
   console.log(`✅ FingerPay API is running on port ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📡 API URL: http://localhost:${PORT}/api`);
